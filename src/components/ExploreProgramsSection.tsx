@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const ExploreProgramsSection: React.FC = () => {
   const programs = [
@@ -43,28 +44,28 @@ export const ExploreProgramsSection: React.FC = () => {
   ];
 
   return (
-    <section id="programs" className="py-24 px-4 sm:px-6 bg-white border-b border-gray-200">
+    <section id="programs" className="py-16 sm:py-24 px-4 sm:px-6 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto">
         {/* Section Header matching exact Brief */}
-        <div className="max-w-3xl mb-16">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-4">
+        <ScrollReveal className="max-w-3xl mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-3 sm:mb-4">
             Explore Our Programs
           </h2>
-          <h3 className="text-xl sm:text-2xl font-bold text-[#0040E9] mb-3">
+          <h3 className="text-lg sm:text-2xl font-bold text-[#0040E9] mb-3">
             Learn skills that move with the real world.
           </h3>
-          <p className="text-base sm:text-lg text-[#000F38]/75 leading-relaxed font-normal">
+          <p className="text-sm sm:text-base lg:text-lg text-[#000F38]/75 leading-relaxed font-normal">
             Our programs focus on practical, in-demand digital disciplines designed to help you develop capabilities that can be applied in professional environments.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* 6 Programs Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* 6 Programs Grid with Staggered ScrollReveal */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {programs.map((prog, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-2xl border border-gray-200 p-8 flex flex-col justify-between hover:shadow-xl hover:border-[#0040E9]/50 transition-all duration-300 group"
-            >
+            <ScrollReveal key={idx} delay={idx * 100}>
+              <div
+                className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 flex flex-col justify-between hover:shadow-xl hover:border-[#0040E9]/50 hover:-translate-y-1 transition-all duration-300 group h-full"
+              >
               <div>
                 <h3 className="text-2xl font-bold text-[#000F38] group-hover:text-[#0040E9] transition-colors mb-4">
                   {prog.title}
@@ -94,6 +95,7 @@ export const ExploreProgramsSection: React.FC = () => {
                 </Link>
               </div>
             </div>
+          </ScrollReveal>
           ))}
         </div>
       </div>

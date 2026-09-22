@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, ArrowRight, X, Send } from 'lucide-react';
 import { ASSETS } from '../data/assets';
+import { ScrollReveal } from './ScrollReveal';
 
 export const ForPartnersSection: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,7 +35,7 @@ export const ForPartnersSection: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             {/* Left Image Column */}
-            <div className="lg:col-span-5 order-2 lg:order-1">
+            <ScrollReveal direction="left" className="lg:col-span-5 order-2 lg:order-1">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 aspect-[4/3] sm:aspect-[5/4] group">
                 <img
                   src={ASSETS.partners}
@@ -42,10 +43,10 @@ export const ForPartnersSection: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Right Content Column */}
-            <div className="lg:col-span-7 order-1 lg:order-2">
+            <ScrollReveal direction="right" delay={150} className="lg:col-span-7 order-1 lg:order-2">
               <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
                 For Partners
               </div>
@@ -68,28 +69,25 @@ export const ForPartnersSection: React.FC = () => {
                 </div>
                 <div className="grid sm:grid-cols-2 gap-2.5">
                   {opportunities.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-[#000F38]/85">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <div key={idx} className="flex items-center gap-2 text-sm text-[#000F38]/80">
+                      <CheckCircle2 className="w-4 h-4 text-[#0040E9] flex-shrink-0" />
                       <span>{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <p className="text-base font-semibold text-[#000F38] mb-8">
-                Let's build a stronger digital talent pipeline together.
-              </p>
-
               <div>
                 <button
+                  type="button"
                   onClick={() => setModalOpen(true)}
                   className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
                 >
-                  Become a Partner
+                  <span>Become a Partner</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>

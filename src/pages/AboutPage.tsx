@@ -2,6 +2,8 @@ import React from 'react';
 import { Target, Compass, BookOpen, Users, Handshake, TrendingUp, ArrowRight, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ASSETS } from '../data/assets';
+import { SocialLinks, SOCIAL_LINKS } from '../components/SocialLinks';
+import { ScrollReveal } from '../components/ScrollReveal';
 
 export const AboutPage: React.FC = () => {
   const approaches = [
@@ -23,7 +25,7 @@ export const AboutPage: React.FC = () => {
     {
       step: '04',
       title: 'DEPLOY',
-      desc: 'Create pathways toward internships, projects, employment and other real-world opportunities.'
+      desc: 'Connect graduates with real opportunities, projects and employer pipelines.'
     }
   ];
 
@@ -53,50 +55,58 @@ export const AboutPage: React.FC = () => {
   return (
     <div className="bg-white min-h-screen text-[#000F38]">
       {/* 1. Hero: ABOUT BRANDORAX matching exact brief */}
-      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-20 lg:py-24 border-b border-white/10">
+      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10">
         {/* Background Image with Directional Fade */}
         <div className="absolute inset-0 z-0">
           <img
             src={ASSETS.community.outreach}
             alt="BrandoraX Empowering Young African Professionals"
-            className="w-full h-full object-cover object-right lg:object-center"
+            className="w-full h-full object-cover object-[60%_center] sm:object-center lg:object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#000F38] via-[#000F38]/95 via-50% to-[#000F38]/40"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-transparent to-[#000F38]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-[#000F38]/50 to-[#000F38]/95 md:bg-gradient-to-r md:from-[#000F38] md:via-[#000F38]/90 md:via-55% md:to-[#000F38]/30"></div>
+          <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-[#000F38]/70 via-transparent to-[#000F38]/85"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-3xl text-left flex flex-col items-start">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
-              About BrandoraX
-            </div>
+            <ScrollReveal direction="down" delay={50}>
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+                About BrandoraX
+              </div>
+            </ScrollReveal>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
-              Turning Digital Potential<br />
-              <span className="text-[#FEC958]">Into Real Opportunity.</span>
-            </h1>
+            <ScrollReveal direction="up" delay={150}>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6 drop-shadow-sm">
+                Turning Digital Potential<br />
+                <span className="text-[#FEC958]">Into Real Opportunity.</span>
+              </h1>
+            </ScrollReveal>
 
-            <p className="text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed mb-8 font-normal">
-              Africa has no shortage of ambitious talent. We are closing the gap between potential, real capability, and career opportunity.
-            </p>
+            <ScrollReveal direction="up" delay={250}>
+              <p className="text-base sm:text-xl text-white/90 max-w-2xl leading-relaxed mb-8 font-normal drop-shadow-sm">
+                Africa has no shortage of ambitious talent. We are closing the gap between potential, real capability, and career opportunity.
+              </p>
+            </ScrollReveal>
 
-            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-              <Link
-                to="/academy"
-                className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
-              >
-                <span>Explore Programs</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+            <ScrollReveal direction="up" delay={350} className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
+                <Link
+                  to="/academy"
+                  className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 group text-center"
+                >
+                  <span>Explore Programs</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
 
-              <Link
-                to="/apply"
-                className="bg-white hover:bg-gray-100 text-[#000F38] px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
-              >
-                <span>Join the Talent Pipeline</span>
-                <ArrowUpRight className="w-4 h-4 text-[#0040E9]" />
-              </Link>
-            </div>
+                <Link
+                  to="/apply"
+                  className="bg-white hover:bg-gray-100 text-[#000F38] px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center justify-center gap-2 text-center"
+                >
+                  <span>Join the Talent Pipeline</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#0040E9]" />
+                </Link>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -278,7 +288,7 @@ export const AboutPage: React.FC = () => {
             Connect with learners, creators, and mentors building their digital careers together across Africa.
           </p>
           <a
-            href="https://t.me/brandorax_community"
+            href={SOCIAL_LINKS.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
@@ -286,6 +296,13 @@ export const AboutPage: React.FC = () => {
             Join Our Community
             <ArrowRight className="w-4 h-4" />
           </a>
+
+          <div className="pt-8 mt-8 border-t border-white/10 flex flex-col items-center">
+            <span className="text-xs font-mono uppercase tracking-wider text-white/60 mb-3">
+              Follow BrandoraX Official Channels:
+            </span>
+            <SocialLinks variant="pill" className="justify-center" />
+          </div>
         </div>
       </section>
     </div>

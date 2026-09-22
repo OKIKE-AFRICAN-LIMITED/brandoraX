@@ -5,6 +5,7 @@ import { ScholarshipBanner } from '../components/ScholarshipBanner';
 import { SubscribeSection } from '../components/SubscribeSection';
 import { ProgramCategory } from '../types';
 import { ASSETS } from '../data/assets';
+import { ScrollReveal } from '../components/ScrollReveal';
 
 interface AcademyPageProps {
   onOpenQuiz?: () => void;
@@ -25,7 +26,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
       focus: 'User Research • UX Strategy • Wireframing • Prototyping • Interface Design • Product Thinking'
     },
     {
-      id: 'graphic-design',
+      id: 'brand-design',
       title: 'Graphic & Brand Design',
       slug: 'graphic-brand-design',
       category: 'Design' as ProgramCategory,
@@ -68,13 +69,15 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
       id: 'cybersecurity',
       title: 'Cybersecurity',
       slug: 'cybersecurity-defense',
-      category: 'Security' as ProgramCategory,
-      duration: '6 Months',
-      tuition: '₦150,000',
-      description: 'Develop practical knowledge of security principles, threats, risk management and defensive practices.',
-      focus: 'Cybersecurity Fundamentals • Threat Awareness • Network Security • Security Operations • Risk • Defensive Practices'
+      category: 'Engineering' as ProgramCategory,
+      duration: '6 – 12 Months',
+      tuition: '₦150,000 – ₦250,000',
+      description: 'Learn how to protect networks, systems and digital infrastructure from threats.',
+      focus: 'Network Security • Threat Analysis • System Defense • Security Best Practices'
     }
   ];
+
+  const categories: ('All' | ProgramCategory)[] = ['All', 'Design', 'Engineering', 'Analytics'];
 
   const filteredPrograms = selectedCategory === 'All'
     ? programs
@@ -83,69 +86,79 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
   return (
     <div className="bg-white min-h-screen text-[#000F38]">
       {/* 1. Hero Header from 02. ACADEMY */}
-      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-20 lg:py-24 border-b border-white/10">
+      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10">
         {/* Background Image with Directional Fade */}
         <div className="absolute inset-0 z-0">
           <img
             src={ASSETS.whyChoose.practicalSkills}
             alt="BrandoraX Academy Practical Learning"
-            className="w-full h-full object-cover object-right lg:object-center"
+            className="w-full h-full object-cover object-[60%_center] sm:object-center lg:object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#000F38] via-[#000F38]/95 via-50% to-[#000F38]/40"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-transparent to-[#000F38]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-[#000F38]/50 to-[#000F38]/95 md:bg-gradient-to-r md:from-[#000F38] md:via-[#000F38]/90 md:via-55% md:to-[#000F38]/30"></div>
+          <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-[#000F38]/70 via-transparent to-[#000F38]/85"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-3xl text-left flex flex-col items-start">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
-              BrandoraX Academy
-            </div>
+            <ScrollReveal direction="down" delay={50}>
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                BrandoraX Academy
+              </div>
+            </ScrollReveal>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
-              Learn Skills. Build Experience.<br />
-              <span className="text-[#FEC958]">Prepare for the Real World.</span>
-            </h1>
+            <ScrollReveal direction="up" delay={150}>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6 drop-shadow-sm">
+                Learn Skills. Build Experience.<br />
+                <span className="text-[#FEC958]">Prepare for the Real World.</span>
+              </h1>
+            </ScrollReveal>
 
-            <p className="text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed mb-8 font-normal">
-              Turn what you learn into skills you can use, experience you can prove, and opportunities you can pursue.
-            </p>
+            <ScrollReveal direction="up" delay={250}>
+              <p className="text-base sm:text-xl text-white/90 max-w-2xl leading-relaxed mb-8 font-normal drop-shadow-sm">
+                Turn what you learn into skills you can use, experience you can prove, and opportunities you can pursue.
+              </p>
+            </ScrollReveal>
 
-            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-              <a
-                href="#available-programmes"
-                className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
-              >
-                <span>Explore Programs</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
-
-              {onOpenQuiz && (
-                <button
-                  onClick={onOpenQuiz}
-                  className="border border-white/30 hover:border-white hover:bg-white/10 text-white px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2 backdrop-blur-sm"
+            <ScrollReveal direction="up" delay={350} className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
+                <a
+                  href="#available-programmes"
+                  className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 group text-center"
                 >
-                  <Compass className="w-4 h-4 text-[#FEC958]" />
-                  <span>Take 60s Track Quiz</span>
-                </button>
-              )}
-            </div>
+                  <span>Explore Programs</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </a>
+
+                {onOpenQuiz && (
+                  <button
+                    onClick={onOpenQuiz}
+                    className="border border-white/30 hover:border-white hover:bg-white/10 text-white px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 backdrop-blur-sm text-center"
+                  >
+                    <Compass className="w-4 h-4 text-[#FEC958]" />
+                    <span>Take 60s Track Quiz</span>
+                  </button>
+                )}
+              </div>
+            </ScrollReveal>
 
             {/* Clean Proof Checkpoints */}
-            <div className="flex flex-wrap items-center gap-6 pt-6 text-xs text-white/75 border-t border-white/10 mt-8 w-full max-w-xl">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                <span>6 Job-Ready Tracks</span>
+            <ScrollReveal direction="up" delay={450} className="w-full max-w-xl">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-6 text-xs text-white/85 border-t border-white/10 mt-8 w-full">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#10B981] flex-shrink-0" />
+                  <span>6 Job-Ready Tracks</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#10B981] flex-shrink-0" />
+                  <span>Tangible Proof of Work</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#10B981] flex-shrink-0" />
+                  <span>Employment Pipeline</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                <span>Tangible Proof of Work</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                <span>Up to 90% Scholarships</span>
-              </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, ArrowRight, X, Send } from 'lucide-react';
 import { ASSETS } from '../data/assets';
+import { ScrollReveal } from './ScrollReveal';
 
 interface ForCompaniesProps {
   onOpenPartnerModal?: () => void;
@@ -38,7 +39,7 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartner
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             {/* Left Content Column */}
-            <div className="lg:col-span-7">
+            <ScrollReveal direction="left" className="lg:col-span-7">
               <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
                 For Companies
               </div>
@@ -77,32 +78,32 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartner
               <div className="flex flex-wrap items-center gap-4">
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="bg-[#000F38] hover:bg-black text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
+                  className="bg-[#000F38] hover:bg-black text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2 group"
                 >
-                  Hire Talent
-                  <ArrowRight className="w-4 h-4 text-[#FEC958]" />
+                  <span>Hire Talent</span>
+                  <ArrowRight className="w-4 h-4 text-[#FEC958] transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
 
                 {onOpenPartnerModal ? (
                   <button
                     onClick={onOpenPartnerModal}
-                    className="border-2 border-[#000F38]/30 hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                    className="border-2 border-[#000F38]/30 hover:border-[#000F38] hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 inline-flex items-center gap-2"
                   >
                     Partner with Us
                   </button>
                 ) : (
                   <a
                     href="#partners"
-                    className="border-2 border-[#000F38]/30 hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                    className="border-2 border-[#000F38]/30 hover:border-[#000F38] hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 inline-flex items-center gap-2"
                   >
                     Partner with Us
                   </a>
                 )}
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Right Image Column */}
-            <div className="lg:col-span-5">
+            <ScrollReveal direction="right" delay={150} className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 aspect-[4/3] sm:aspect-[5/4] group">
                 <img
                   src={ASSETS.companies}
@@ -110,7 +111,7 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartner
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>

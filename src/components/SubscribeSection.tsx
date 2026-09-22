@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { ASSETS } from '../data/assets';
+import { ScrollReveal } from './ScrollReveal';
 
 export const SubscribeSection: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +17,8 @@ export const SubscribeSection: React.FC = () => {
   return (
     <section className="py-20 px-4 sm:px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="relative rounded-3xl overflow-hidden shadow-xl bg-[#000F38] text-white">
+        <ScrollReveal direction="up" className="w-full">
+          <div className="relative rounded-3xl overflow-hidden shadow-xl bg-[#000F38] text-white">
           {/* Background Image & Overlay */}
           <div className="absolute inset-0">
             <img
@@ -67,7 +69,8 @@ export const SubscribeSection: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
-    </section>
-  );
+      </ScrollReveal>
+    </div>
+  </section>
+);
 };

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Send, Briefcase, Mail } from 'lucide-react';
+import { SocialLinks, SOCIAL_LINKS } from './SocialLinks';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-brand-navy-dark text-white pt-20 pb-12 px-4 sm:px-6 border-t border-white/10">
+    <footer className="bg-brand-navy-dark text-white pt-16 sm:pt-20 pb-12 px-4 sm:px-6 border-t border-white/10">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 mb-12 sm:mb-16">
           {/* Brand Column (5 cols) */}
           <div className="lg:col-span-5">
             <Link to="/" className="inline-block mb-6">
@@ -21,9 +22,17 @@ export const Footer: React.FC = () => {
               An outcome-driven digital workforce development platform: train on live briefs, build verified proof-of-work portfolios, and connect to top employer opportunities across Africa.
             </p>
 
-            <div className="inline-flex items-center gap-2.5 text-xs font-mono text-gray-300 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <div className="inline-flex items-center gap-2.5 text-xs font-mono text-gray-300 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 mb-6">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>Next Cohort Application Window Open</span>
+            </div>
+
+            {/* Official Social Media Channels */}
+            <div>
+              <span className="block text-[11px] font-mono uppercase tracking-wider text-gray-400 mb-2.5">
+                Official Channels
+              </span>
+              <SocialLinks />
             </div>
           </div>
 
