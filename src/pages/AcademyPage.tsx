@@ -1,85 +1,180 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, ArrowRight, Sparkles, CheckCircle2, Shield, Layers, Award, Terminal } from 'lucide-react';
-import { PROGRAMS } from '../data/programsData';
+import { Clock, ArrowRight, Compass, CheckCircle2 } from 'lucide-react';
+import { ScholarshipBanner } from '../components/ScholarshipBanner';
+import { SubscribeSection } from '../components/SubscribeSection';
 import { ProgramCategory } from '../types';
+import { ASSETS } from '../data/assets';
 
 interface AcademyPageProps {
-  onOpenQuiz: () => void;
+  onOpenQuiz?: () => void;
 }
 
 export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
   const [selectedCategory, setSelectedCategory] = useState<'All' | ProgramCategory>('All');
 
+  const programs = [
+    {
+      id: 'uiux-design',
+      title: 'UI/UX & Product Design',
+      slug: 'ui-ux-product-design',
+      category: 'Design' as ProgramCategory,
+      duration: '3 – 6 Months',
+      tuition: '₦80,000 – ₦150,000',
+      description: 'Learn how to research, structure and design digital experiences that solve real user problems.',
+      focus: 'User Research • UX Strategy • Wireframing • Prototyping • Interface Design • Product Thinking'
+    },
+    {
+      id: 'graphic-design',
+      title: 'Graphic & Brand Design',
+      slug: 'graphic-brand-design',
+      category: 'Design' as ProgramCategory,
+      duration: '3 Months',
+      tuition: '₦80,000',
+      description: 'Develop the creative and strategic skills required to communicate ideas, build visual identities and create professional digital and print experiences.',
+      focus: 'Brand Identity • Graphic Design • Visual Communication • Social Design • Packaging • Creative Direction'
+    },
+    {
+      id: 'web-dev',
+      title: 'Web Development',
+      slug: 'web-development',
+      category: 'Engineering' as ProgramCategory,
+      duration: '3 – 6 Months',
+      tuition: '₦80,000 – ₦150,000',
+      description: 'Learn how to turn designs and ideas into functional, responsive web experiences.',
+      focus: 'HTML • CSS • JavaScript • Responsive Development • Git • Web Deployment'
+    },
+    {
+      id: 'software-eng',
+      title: 'Software Engineering',
+      slug: 'software-systems-engineering',
+      category: 'Engineering' as ProgramCategory,
+      duration: '6 – 12 Months',
+      tuition: '₦150,000 – ₦250,000',
+      description: 'Develop the engineering skills required to build, test and deploy real-world software applications.',
+      focus: 'Programming • Backend Development • APIs • Databases • Software Architecture • Deployment'
+    },
+    {
+      id: 'data-analysis',
+      title: 'Data Analysis',
+      slug: 'data-analysis-bi',
+      category: 'Analytics' as ProgramCategory,
+      duration: '6 – 12 Months',
+      tuition: '₦150,000 – ₦250,000',
+      description: 'Learn how to turn raw data into useful insights that support better decisions.',
+      focus: 'Data Cleaning • Analysis • Visualization • Spreadsheets • SQL • Data Storytelling'
+    },
+    {
+      id: 'cybersecurity',
+      title: 'Cybersecurity',
+      slug: 'cybersecurity-defense',
+      category: 'Security' as ProgramCategory,
+      duration: '6 Months',
+      tuition: '₦150,000',
+      description: 'Develop practical knowledge of security principles, threats, risk management and defensive practices.',
+      focus: 'Cybersecurity Fundamentals • Threat Awareness • Network Security • Security Operations • Risk • Defensive Practices'
+    }
+  ];
+
   const filteredPrograms = selectedCategory === 'All'
-    ? PROGRAMS
-    : PROGRAMS.filter((p) => p.category === selectedCategory);
+    ? programs
+    : programs.filter((p) => p.category === selectedCategory);
 
   return (
-    <div className="bg-brand-gray-50 min-h-screen">
-      {/* Academy Hero Header */}
-      <section className="pt-16 pb-20 px-4 sm:px-6 bg-brand-navy text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="bg-white min-h-screen text-[#000F38]">
+      {/* 1. Hero Header from 02. ACADEMY */}
+      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-20 lg:py-24 border-b border-white/10">
+        {/* Background Image with Directional Fade */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={ASSETS.whyChoose.practicalSkills}
+            alt="BrandoraX Academy Practical Learning"
+            className="w-full h-full object-cover object-right lg:object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#000F38] via-[#000F38]/95 via-50% to-[#000F38]/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-transparent to-[#000F38]/90"></div>
+        </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-brand-amber font-bold mb-4 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10">
-            <Sparkles className="w-3.5 h-3.5 text-brand-amber" />
-            Outcome-Based Learning Disciplines
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+          <div className="max-w-3xl text-left flex flex-col items-start">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
+              BrandoraX Academy
+            </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] max-w-4xl mb-6">
-            Learn practical skills.<br />
-            <span className="text-brand-blue">Build verified proof.</span><br />
-            Prepare for the real world.
-          </h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+              Learn Skills. Build Experience.<br />
+              <span className="text-[#FEC958]">Prepare for the Real World.</span>
+            </h1>
 
-          <p className="text-gray-300 text-lg sm:text-xl max-w-2xl leading-relaxed mb-8">
-            Turn what you learn into production codebases, published design systems, and client-grade dashboards that prove your capability to employers.
-          </p>
+            <p className="text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed mb-8 font-normal">
+              Turn what you learn into skills you can use, experience you can prove, and opportunities you can pursue.
+            </p>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <Link
-              to="/apply"
-              className="bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
-            >
-              Apply for Admission
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+              <a
+                href="#available-programmes"
+                className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+              >
+                <span>Explore Programs</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
 
-            <button
-              onClick={onOpenQuiz}
-              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-brand-amber" />
-              Take 60s Track Quiz
-            </button>
+              {onOpenQuiz && (
+                <button
+                  onClick={onOpenQuiz}
+                  className="border border-white/30 hover:border-white hover:bg-white/10 text-white px-7 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2 backdrop-blur-sm"
+                >
+                  <Compass className="w-4 h-4 text-[#FEC958]" />
+                  <span>Take 60s Track Quiz</span>
+                </button>
+              )}
+            </div>
+
+            {/* Clean Proof Checkpoints */}
+            <div className="flex flex-wrap items-center gap-6 pt-6 text-xs text-white/75 border-t border-white/10 mt-8 w-full max-w-xl">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                <span>6 Job-Ready Tracks</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                <span>Tangible Proof of Work</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                <span>Up to 90% Scholarships</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Main Discipline Directory */}
-      <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+      {/* 2. Available Programmes matching 02. ACADEMY */}
+      <section id="available-programmes" className="py-24 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-navy">
-              Available Programs & Syllabi
+            <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
+              Curriculum & Tracks
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight">
+              Available Programmes
             </h2>
-            <p className="text-sm text-brand-gray-600 mt-1">
-              Select a discipline to view full week-by-week curriculum, tools, and deliverables.
+            <p className="text-gray-600 mt-3 text-base sm:text-lg max-w-2xl">
+              Practical, demand-driven digital tracks engineered to build verified capability, mentor guidance, and real-world career readiness.
             </p>
           </div>
 
-          {/* Category Filter Pills */}
+          {/* Filter Pills */}
           <div className="flex flex-wrap gap-2">
-            {(['All', 'Engineering', 'Design', 'Analytics', 'Security'] as const).map((cat) => (
+            {(['All', 'Design', 'Engineering', 'Analytics', 'Security'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-md text-xs font-mono font-bold uppercase tracking-wider transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-brand-navy text-white shadow-sm'
-                    : 'bg-white text-brand-gray-600 hover:text-brand-navy border border-brand-gray-200'
-                }`}
+                className={`text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-lg transition-colors ${selectedCategory === cat
+                    ? 'bg-[#000F38] text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                  }`}
               >
                 {cat}
               </button>
@@ -87,204 +182,69 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
           </div>
         </div>
 
-        {/* Disciplines Cards Grid */}
+        {/* 6 Programmes Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-          {filteredPrograms.map((program) => (
+          {filteredPrograms.map((prog) => (
             <div
-              key={program.id}
-              className="bg-white border border-brand-gray-200 rounded-xl overflow-hidden flex flex-col justify-between hover:border-brand-blue hover:shadow-brand transition-all group"
+              key={prog.id}
+              className="bg-white rounded-2xl border border-gray-200 p-8 flex flex-col justify-between hover:shadow-xl hover:border-[#0040E9]/50 transition-all duration-300 group"
             >
               <div>
-                <div className="p-6 pb-4 border-b border-brand-gray-200/60 bg-gradient-to-r from-brand-gray-50 to-white flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-blue bg-brand-blue-light px-2.5 py-1 rounded">
-                    {program.category}
+                <div className="flex items-center justify-between text-xs mb-4">
+                  <span className="font-bold text-[#0040E9] uppercase tracking-wider bg-blue-50 px-2.5 py-1 rounded-md">
+                    {prog.category}
                   </span>
-                  <span className="text-xs font-mono text-brand-gray-500 flex items-center gap-1">
+                  <span className="text-gray-500 flex items-center gap-1 font-medium">
                     <Clock className="w-3.5 h-3.5" />
-                    {program.duration}
+                    {prog.duration}
                   </span>
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-brand-navy mb-2 group-hover:text-brand-blue transition-colors">
-                    {program.title}
-                  </h3>
+                <h3 className="text-2xl font-bold text-[#000F38] group-hover:text-[#0040E9] transition-colors mb-3">
+                  {prog.title}
+                </h3>
 
-                  <p className="text-sm text-brand-gray-600 leading-relaxed mb-6 line-clamp-3">
-                    {program.description}
-                  </p>
+                <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                  {prog.description}
+                </p>
 
-                  <div className="bg-brand-gray-50 border border-brand-gray-200 rounded-lg p-4 mb-6 text-xs font-mono">
-                    <div className="text-[10px] uppercase text-brand-gray-500 font-semibold mb-1">
-                      Capstone Deliverable You Ship:
-                    </div>
-                    <div className="text-brand-navy font-sans font-bold text-xs leading-snug">
-                      {program.capstoneProject.title}
-                    </div>
+                <div className="bg-[#F8FAFC] border border-gray-100 rounded-xl p-4 mb-8">
+                  <div className="text-xs font-mono uppercase text-[#0040E9] font-bold mb-2">
+                    Focus:
                   </div>
-
-                  <div>
-                    <div className="text-[11px] font-mono uppercase text-brand-gray-500 mb-2 font-semibold">
-                      Tools & Stack:
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {program.tools.slice(0, 5).map((tool) => (
-                        <span
-                          key={tool}
-                          className="text-[11px] font-mono bg-brand-gray-100 text-brand-navy px-2 py-0.5 rounded border border-brand-gray-200"
-                        >
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="text-xs text-gray-700 leading-relaxed font-medium">
+                    {prog.focus}
                   </div>
                 </div>
               </div>
 
-              <div className="p-6 pt-4 border-t border-brand-gray-200 bg-brand-gray-50/50 flex items-center justify-between">
+              <div className="pt-6 border-t border-gray-100 flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-[10px] font-mono uppercase text-brand-gray-500 font-semibold">
-                    Tuition
-                  </div>
-                  <div className="text-sm font-bold text-brand-navy">
-                    {program.tuition.upfront}
-                  </div>
+                  <div className="text-[10px] uppercase font-mono text-gray-400 font-medium">Tuition</div>
+                  <div className="text-sm font-bold text-[#000F38]">{prog.tuition}</div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Link
-                    to={`/academy/${program.slug}`}
-                    className="text-xs font-bold uppercase tracking-wider text-brand-blue hover:text-brand-blue-hover px-3 py-2 hover:bg-brand-blue-light rounded transition-colors inline-flex items-center gap-1"
+                    to={`/academy/${prog.slug}`}
+                    className="bg-[#000F38] group-hover:bg-[#0040E9] text-white py-2.5 px-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-1.5 shadow-sm"
                   >
-                    View Syllabus
+                    Explore Program
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-
-                  <Link
-                    to={`/apply?track=${program.id}`}
-                    className="bg-brand-navy hover:bg-black text-white px-3.5 py-2 rounded text-xs font-bold uppercase tracking-wider transition-colors"
-                  >
-                    Enroll
                   </Link>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Clear & Transparent Tuition Section */}
-        <div className="bg-white border border-brand-gray-200 rounded-2xl p-8 sm:p-12 mb-20 shadow-sm">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="text-xs font-mono text-brand-blue uppercase tracking-widest font-bold mb-2">
-              Predictable Investment
-            </div>
-            <h3 className="text-3xl font-extrabold text-brand-navy">
-              Transparent Tuition. Zero Hidden Charges.
-            </h3>
-            <p className="text-brand-gray-600 mt-2 text-sm sm:text-base">
-              Predictable pricing designed to keep elite tech education accessible to ambitious African talent.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Tier 1: 3-Month Intensive */}
-            <div className="border border-brand-gray-200 rounded-xl p-8 bg-brand-gray-50 flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-mono font-bold uppercase text-brand-blue bg-brand-blue-light px-2.5 py-1 rounded">
-                  Tier 1 Track
-                </span>
-                <h4 className="text-2xl font-bold text-brand-navy mt-3 mb-1">
-                  3-Month Intensive
-                </h4>
-                <div className="text-3xl font-extrabold text-brand-navy my-4">
-                  ₦80,000 <span className="text-xs font-normal text-brand-gray-500 font-mono">/ one-time</span>
-                </div>
-                <p className="text-xs text-brand-gray-600 leading-relaxed mb-6">
-                  Ideal for foundational acceleration: UI/UX, Graphic Design, or Core Web Development with weekly mentor reviews.
-                </p>
-
-                <ul className="space-y-3 text-xs font-mono text-brand-gray-700 border-t border-brand-gray-200 pt-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>2–3 Live Google Meet sessions / week</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Weekly 1-on-1 Pull Request reviews</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>2 Verified client-grade portfolio projects</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Telegram alumni community access</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-8">
-                <Link
-                  to="/apply"
-                  className="w-full text-center block bg-brand-blue hover:bg-brand-blue-hover text-white py-3 rounded font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
-                >
-                  Apply For 3-Month Track
-                </Link>
-              </div>
-            </div>
-
-            {/* Tier 2: 6-Month Professional */}
-            <div className="border-2 border-brand-blue rounded-xl p-8 bg-white flex flex-col justify-between relative shadow-brand">
-              <div className="absolute top-4 right-4 bg-brand-blue text-white text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded">
-                Most Comprehensive
-              </div>
-
-              <div>
-                <span className="text-xs font-mono font-bold uppercase text-brand-blue bg-brand-blue-light px-2.5 py-1 rounded">
-                  Tier 2 Track
-                </span>
-                <h4 className="text-2xl font-bold text-brand-navy mt-3 mb-1">
-                  6-Month Professional
-                </h4>
-                <div className="text-3xl font-extrabold text-brand-navy my-4">
-                  ₦150,000 <span className="text-xs font-normal text-brand-gray-500 font-mono">/ one-time</span>
-                </div>
-                <p className="text-xs text-brand-gray-600 leading-relaxed mb-6">
-                  Deep technical immersion: Software Engineering, Data Analysis & BI, or Cybersecurity Defense with talent pipeline evaluation.
-                </p>
-
-                <ul className="space-y-3 text-xs font-mono text-brand-gray-700 border-t border-brand-gray-200 pt-6">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Everything in 3-Month Intensive</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>4 Advanced client case studies & live apps</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Cross-functional sprint team collaboration</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Priority BrandoraX Talent Pipeline vetting</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-8">
-                <Link
-                  to="/apply"
-                  className="w-full text-center block bg-brand-navy hover:bg-black text-white py-3 rounded font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
-                >
-                  Apply For 6-Month Track
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
+
+      {/* 3. Scholarships Available (from 02. ACADEMY brief) */}
+      <ScholarshipBanner />
+
+      {/* 4. Subscribe Section (from 02. ACADEMY brief) */}
+      <SubscribeSection />
     </div>
   );
 };
+

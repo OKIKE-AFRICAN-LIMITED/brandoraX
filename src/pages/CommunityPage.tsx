@@ -1,177 +1,158 @@
-import React, { useState } from 'react';
-import { Users, Send, Video, Trophy, MessageSquare, ArrowRight, CheckCircle2, Mail, Sparkles } from 'lucide-react';
+import React from 'react';
+import { Users, Send, Video, MessageSquare, HeartHandshake, Calendar, ArrowRight } from 'lucide-react';
+import { SubscribeSection } from '../components/SubscribeSection';
+import { ASSETS } from '../data/assets';
 
 export const CommunityPage: React.FC = () => {
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newsletterEmail) setNewsletterSubscribed(true);
-  };
-
-  const communityFeatures = [
+  const activities = [
     {
-      icon: Video,
-      title: 'Bi-Weekly Masterclasses',
-      description: 'Join practical sessions and system teardowns hosted by working tech leads across Africa, the UK, and North America.'
+      title: 'Webinars & Learning Sessions',
+      description: 'Join Practical conversations and educational sessions designed around relevant digital skills, careers and professional growth.',
+      image: ASSETS.community.hero,
+      icon: Video
     },
     {
-      icon: Users,
-      title: 'Peer Sprints & Code Reviews',
-      description: 'Don’t build alone. Pair program with other motivated learners, critique Figma layouts, and resolve git merge conflicts together.'
+      title: 'Industry Conversations',
+      description: 'You get to Hear from practitioners and professionals who are actively working in the digital space.',
+      image: ASSETS.community.industryConversations,
+      icon: MessageSquare
     },
     {
-      icon: Trophy,
-      title: 'Weekend Hackathons',
-      description: 'High-energy time-boxed challenges where cross-functional teams ship working prototypes under 48 hours for recognition.'
+      title: 'Community Events',
+      description: 'Participate in activities designed to connect people, share knowledge and create meaningful relationships.',
+      image: ASSETS.community.events,
+      icon: Calendar
     },
     {
-      icon: MessageSquare,
-      title: 'Job & Internship Alerts',
-      description: 'Exclusive first access to freelance projects, junior vacancies, and internship openings shared directly by our hiring partners.'
+      title: 'Outreach & Empowerment',
+      description: 'We work to expand access to digital knowledge and opportunities, especially among young people and aspiring professionals.',
+      image: ASSETS.community.outreach,
+      icon: HeartHandshake
+    },
+    {
+      title: 'Collaboration',
+      description: 'Connect with people who are learning, building and working across different areas of the digital ecosystem.',
+      image: ASSETS.community.collaboration,
+      icon: Users
     }
   ];
 
   return (
-    <div className="bg-brand-gray-50 min-h-screen">
-      {/* Hero Header */}
-      <section className="bg-brand-navy text-white py-16 lg:py-24 px-4 sm:px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="bg-white min-h-screen text-[#000F38]">
+      {/* 1. Hero Header matching 03. COMMUNITY */}
+      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-20 lg:py-24 border-b border-white/10">
+        {/* Background Image with Directional Fade */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={ASSETS.community.hero}
+            alt="BrandoraX Community of African Tech Learners"
+            className="w-full h-full object-cover object-right lg:object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#000F38] via-[#000F38]/95 via-50% to-[#000F38]/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-transparent to-[#000F38]/90"></div>
+        </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-brand-amber font-bold mb-4 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10">
-            <Users className="w-3.5 h-3.5 text-brand-amber" />
-            2,000+ Community Members
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+          <div className="max-w-3xl text-left flex flex-col items-start">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+              <Users className="w-3.5 h-3.5" />
+              2,000+ Community Members
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+              More Than a Classroom.<br />
+              <span className="text-[#FEC958]">A Community for Digital Growth.</span>
+            </h1>
+
+            <p className="text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed mb-8 font-normal">
+              Don’t learn alone. Connect with aspiring professionals, creators, and experienced practitioners building together across Africa.
+            </p>
+
+            <div>
+              <a
+                href="https://t.me/brandorax_community"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+              >
+                <Send className="w-4 h-4" />
+                <span>Join the BrandoraX Community</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </div>
+
+            {/* Proof Checkpoints */}
+            <div className="flex flex-wrap items-center gap-6 pt-6 text-xs text-white/75 border-t border-white/10 mt-8 w-full max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                <span>Weekly Expert Sessions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                <span>Collaborative Projects</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                <span>100% Free to Join</span>
+              </div>
+            </div>
           </div>
-
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] max-w-4xl mb-6">
-            More than a classroom.<br />
-            <span className="text-brand-blue">A community for digital growth.</span>
-          </h1>
-
-          <p className="text-gray-300 text-lg sm:text-xl max-w-2xl leading-relaxed mb-8">
-            Don’t learn in isolation. Join a growing pan-African network of aspiring digital professionals, creators, and experienced practitioners who are learning, sharing, connecting, and growing together.
-          </p>
-
-          <a
-            href="https://t.me/brandorax_community"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
-          >
-            <Send className="w-4 h-4" />
-            Join BrandoraX Telegram Hub
-            <ArrowRight className="w-4 h-4" />
-          </a>
         </div>
       </section>
 
-      {/* Community Pillars Grid */}
-      <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="max-w-2xl mb-12">
-          <div className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-2">
-            Ecosystem Activities
+      {/* 2. What Happens in the Community? */}
+      <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="max-w-3xl mb-16">
+          <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
+            Community Activities
           </div>
-          <h2 className="text-3xl font-extrabold text-brand-navy">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight">
             What Happens in the Community?
           </h2>
-          <p className="text-brand-gray-600 mt-2 text-sm sm:text-base">
-            From technical feedback to career guidance, our community is built to keep you accountable and engaged throughout your learning journey.
+          <p className="text-gray-600 mt-3 text-base sm:text-lg">
+            Five core initiatives connecting talent, mentors, creators, and employment opportunities across Africa.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-          {communityFeatures.map((feat, idx) => {
-            const Icon = feat.icon;
+        {/* 5 Community Pillars Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+          {activities.map((act, idx) => {
+            const Icon = act.icon;
             return (
               <div
                 key={idx}
-                className="bg-white border border-brand-gray-200 rounded-xl p-6 shadow-sm hover:border-brand-blue transition-all"
+                className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
               >
-                <div className="w-12 h-12 rounded-lg bg-brand-blue-light text-brand-blue flex items-center justify-center mb-4">
-                  <Icon className="w-6 h-6" />
+                <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                  <img
+                    src={act.image}
+                    alt={act.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 w-8 h-8 rounded-lg bg-[#000F38]/80 backdrop-blur-sm text-white flex items-center justify-center shadow-sm">
+                    <Icon className="w-4 h-4 text-[#FEC958]" />
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold text-brand-navy mb-2">{feat.title}</h3>
-                <p className="text-xs text-brand-gray-600 leading-relaxed">{feat.description}</p>
+
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-[#000F38] group-hover:text-[#0040E9] transition-colors mb-3">
+                      {act.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {act.description}
+                    </p>
+                  </div>
+                </div>
               </div>
             );
           })}
         </div>
-
-        {/* Telegram Live Preview & Newsletter */}
-        <div className="grid lg:grid-cols-12 gap-8 items-center">
-          {/* Telegram Card */}
-          <div className="lg:col-span-7 bg-brand-navy text-white rounded-2xl p-8 sm:p-10 border border-brand-navy-light shadow-brand">
-            <div className="flex items-center justify-between border-b border-white/15 pb-4 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-xs font-mono text-gray-300">Live Telegram Discussions</span>
-              </div>
-              <span className="text-xs font-mono text-brand-amber font-bold">2,000+ Active</span>
-            </div>
-
-            <div className="space-y-3 font-sans text-xs mb-8">
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <span className="text-brand-amber font-bold block mb-1">Mentor Tunde · Full-Stack Lead</span>
-                <p className="text-gray-300">"Great job to everyone who submitted the Supabase auth sprint yesterday. Check your individual repo PRs for benchmark critiques."</p>
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <span className="text-brand-blue font-bold block mb-1">Chioma D. · UI/UX Cohort</span>
-                <p className="text-gray-300">"Just deployed our Fintech case study on Behance! Thanks to the Saturday critique room for the typography suggestions."</p>
-              </div>
-            </div>
-
-            <a
-              href="https://t.me/brandorax_community"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-brand-blue hover:bg-brand-blue-hover text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md inline-flex items-center gap-2 transition-colors shadow-md"
-            >
-              <Send className="w-4 h-4" />
-              Join The Channel Now
-            </a>
-          </div>
-
-          {/* Newsletter Box */}
-          <div className="lg:col-span-5 bg-white border border-brand-gray-200 rounded-2xl p-8 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-brand-blue-light text-brand-blue flex items-center justify-center mb-4">
-              <Mail className="w-5 h-5" />
-            </div>
-
-            <h3 className="text-xl font-bold text-brand-navy mb-2">
-              Stay in the Loop
-            </h3>
-            <p className="text-xs text-brand-gray-600 leading-relaxed mb-6">
-              Get updates on new cohort admissions, masterclass announcements, free learning sprints, and talent opportunities delivered to your inbox.
-            </p>
-
-            {!newsletterSubscribed ? (
-              <form onSubmit={handleSubscribe} className="space-y-3">
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email address"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-xs text-brand-navy focus:outline-none focus:border-brand-blue"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-brand-navy hover:bg-black text-white py-3 rounded-md font-bold text-xs uppercase tracking-wider transition-all"
-                >
-                  Subscribe to Newsletter
-                </button>
-              </form>
-            ) : (
-              <div className="bg-emerald-50 text-emerald-800 p-4 rounded-xl border border-emerald-200 text-xs">
-                <strong>Subscribed!</strong> You will receive our next community digest and webinar invitations.
-              </div>
-            )}
-          </div>
-        </div>
       </section>
+
+      {/* 3. Subscribe Section matching brief */}
+      <SubscribeSection />
     </div>
   );
 };
+

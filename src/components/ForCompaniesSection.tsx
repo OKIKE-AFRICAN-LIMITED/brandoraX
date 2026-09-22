@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
-import { Briefcase, Building2, CheckCircle2, ArrowRight, X, Send, Users, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ArrowRight, X, Send } from 'lucide-react';
+import { ASSETS } from '../data/assets';
 
 interface ForCompaniesProps {
-  isOpenModal?: boolean;
-  onCloseModal?: () => void;
+  onOpenPartnerModal?: () => void;
 }
 
-export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({
-  isOpenModal,
-  onCloseModal
-}) => {
-  const [internalModalOpen, setInternalModalOpen] = useState(false);
+export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartnerModal }) => {
+  const [modalOpen, setModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '',
     workEmail: '',
-    roleNeeded: 'Full-Stack Developers',
+    roleNeeded: 'UI/UX & Product Design',
     talentCount: '1-3',
     message: ''
   });
 
-  const showModal = isOpenModal !== undefined ? isOpenModal : internalModalOpen;
-  const handleClose = () => {
-    if (onCloseModal) onCloseModal();
-    setInternalModalOpen(false);
-    setSubmitted(false);
-  };
+  const benefits = [
+    'Access emerging digital talent',
+    'Source interns',
+    'Find project-based professionals',
+    'Identify potential hires',
+    'Support talent development',
+    'Build longer-term talent pipelines',
+    'Partner on corporate training'
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,211 +34,201 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({
 
   return (
     <>
-      <section id="companies" className="py-24 px-4 sm:px-6 bg-white border-b border-brand-gray-200 scroll-mt-20">
+      <section id="companies" className="py-24 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-brand-navy via-brand-navy-dark to-brand-navy text-white rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-2xl">
-            {/* Ambient blur lights */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            {/* Left Content Column */}
+            <div className="lg:col-span-7">
+              <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
+                For Companies
+              </div>
 
-            <div className="grid lg:grid-cols-12 gap-10 items-center relative z-10">
-              <div className="lg:col-span-7">
-                <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-brand-amber font-bold mb-4 bg-white/10 px-3 py-1.5 rounded-full">
-                  <Briefcase className="w-3.5 h-3.5 text-brand-amber" />
-                  For Employers & Enterprise Partners
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-4">
+                Need digital talent?
+              </h2>
+
+              <p className="text-base sm:text-lg text-[#000F38]/80 leading-relaxed mb-4">
+                Finding the right digital talent shouldn't mean sorting through endless applications without knowing who can actually deliver.
+              </p>
+
+              <p className="text-base sm:text-lg text-[#000F38]/80 leading-relaxed mb-6">
+                BrandoraX helps companies access a growing pool of trained, assessed and developing digital professionals across key areas of the digital workforce.
+              </p>
+
+              <div className="mb-6">
+                <div className="text-sm font-bold text-[#000F38] mb-3">
+                  Through BrandoraX, you will:
                 </div>
-
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
-                  Need assessed, job-ready digital talent?
-                </h2>
-
-                <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-8">
-                  Finding dependable junior and intermediate talent shouldn't mean sifting through hundreds of identical CVs without knowing who can actually write code, design systems, or query production databases.
-                </p>
-
-                <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-bold text-white mb-1">Pre-Assessed Portfolios</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">
-                        Every graduate is vetted on verified Git commits, Figma systems, and live cloud URLs.
-                      </p>
+                <div className="grid sm:grid-cols-2 gap-2.5">
+                  {benefits.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-[#000F38]/85">
+                      <CheckCircle2 className="w-4 h-4 text-[#0040E9] flex-shrink-0" />
+                      <span>{item}</span>
                     </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-bold text-white mb-1">Zero Hiring Guesswork</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">
-                        Direct interviews with candidates who have solved real client briefs under pressure.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4">
-                  <button
-                    onClick={() => setInternalModalOpen(true)}
-                    className="bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
-                  >
-                    Request Assessed Talent
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-
-                  <a
-                    href="mailto:partnerships@brandorax.com"
-                    className="border border-white/20 hover:bg-white/10 text-white px-6 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-2"
-                  >
-                    Sponsor or Partner With Us
-                  </a>
+                  ))}
                 </div>
               </div>
 
-              {/* Right Column: Pipeline Architecture Card */}
-              <div className="lg:col-span-5 bg-white/5 border border-white/15 rounded-2xl p-6 sm:p-8 backdrop-blur-sm">
-                <div className="text-xs font-mono uppercase text-brand-amber font-bold mb-2">
-                  Talent Pipeline Pathways
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">
-                  Customized Workforce Solutions
-                </h3>
+              <p className="text-sm sm:text-base text-[#000F38]/75 leading-relaxed mb-8 font-medium">
+                We work to understand what companies need and connect them with talent whose skills and experience align with those needs.<br />
+                <strong className="text-[#000F38] font-bold">Build your next team from talent that has been trained to do the work.</strong>
+              </p>
 
-                <div className="space-y-3 font-mono text-xs text-gray-300">
-                  <div className="p-3.5 bg-black/40 rounded-lg border border-white/10 flex items-center justify-between">
-                    <span>Direct Junior & Mid Placement</span>
-                    <span className="text-emerald-400">Available</span>
-                  </div>
-                  <div className="p-3.5 bg-black/40 rounded-lg border border-white/10 flex items-center justify-between">
-                    <span>Corporate Tech Upskilling</span>
-                    <span className="text-brand-amber">Customized</span>
-                  </div>
-                  <div className="p-3.5 bg-black/40 rounded-lg border border-white/10 flex items-center justify-between">
-                    <span>Youth Tech Sponsorship</span>
-                    <span className="text-brand-blue font-bold">CSR Impact</span>
-                  </div>
-                </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="bg-[#000F38] hover:bg-black text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
+                >
+                  Hire Talent
+                  <ArrowRight className="w-4 h-4 text-[#FEC958]" />
+                </button>
 
-                <div className="mt-6 pt-4 border-t border-white/10 text-xs text-gray-400">
-                  Join 50+ prospective hiring partners across Nigeria, Africa, and global remote distributed teams.
-                </div>
+                {onOpenPartnerModal ? (
+                  <button
+                    onClick={onOpenPartnerModal}
+                    className="border-2 border-[#000F38]/30 hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                  >
+                    Partner with Us
+                  </button>
+                ) : (
+                  <a
+                    href="#partners"
+                    className="border-2 border-[#000F38]/30 hover:bg-[#000F38]/5 text-[#000F38] px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center gap-2"
+                  >
+                    Partner with Us
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Right Image Column */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 aspect-[4/3] sm:aspect-[5/4] group">
+                <img
+                  src={ASSETS.companies}
+                  alt="Need digital talent? BrandoraX workforce solutions"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Talent Inquiry Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-navy/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-brand-gray-200 relative">
+      {/* Hire Talent Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl w-full max-w-xl p-6 sm:p-8 relative shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto">
             <button
-              onClick={handleClose}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-brand-gray-100 text-brand-gray-500 hover:text-brand-navy"
+              onClick={() => { setModalOpen(false); setSubmitted(false); }}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
             {!submitted ? (
               <div>
-                <div className="w-12 h-12 rounded-lg bg-brand-blue-light text-brand-blue flex items-center justify-center mb-4">
-                  <Building2 className="w-6 h-6" />
+                <div className="text-xs font-mono uppercase tracking-wider text-[#0040E9] font-bold mb-2">
+                  For Companies
                 </div>
-                <h3 className="text-2xl font-extrabold text-brand-navy mb-2">
-                  Hire From BrandoraX
+                <h3 className="text-2xl font-bold text-[#000F38] mb-2">
+                  Hire Assessed Digital Talent
                 </h3>
-                <p className="text-sm text-brand-gray-600 mb-6">
-                  Tell us what roles your engineering or design team needs. We match you with assessed candidates and their live proof of work.
+                <p className="text-xs text-gray-500 mb-6">
+                  Tell us what digital disciplines you need. We connect you directly with candidates who have been trained to do the work.
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 text-xs font-medium text-gray-700">
                   <div>
-                    <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1 font-semibold">
-                      Company / Organization Name *
-                    </label>
+                    <label className="block mb-1 font-semibold text-[#000F38]">Company Name</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Acme Technologies Ltd"
+                      placeholder="e.g. Acme Africa Ltd"
                       value={formData.companyName}
                       onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0040E9] focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1 font-semibold">
-                      Work Email Address *
-                    </label>
+                    <label className="block mb-1 font-semibold text-[#000F38]">Work Email</label>
                     <input
                       type="email"
                       required
-                      placeholder="e.g. talent@company.com"
+                      placeholder="talent@company.com"
                       value={formData.workEmail}
                       onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0040E9] focus:outline-none"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1 font-semibold">
-                        Discipline Needed
-                      </label>
+                      <label className="block mb-1 font-semibold text-[#000F38]">Role Needed</label>
                       <select
                         value={formData.roleNeeded}
                         onChange={(e) => setFormData({ ...formData, roleNeeded: e.target.value })}
-                        className="w-full px-2.5 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-xs text-brand-navy focus:outline-none focus:border-brand-blue"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0040E9] focus:outline-none bg-white"
                       >
-                        <option value="Full-Stack Developers">Full-Stack Web Dev</option>
-                        <option value="UI/UX Designers">UI/UX Product Design</option>
-                        <option value="Data Analysts">Data & BI Analysts</option>
-                        <option value="Cybersecurity">Cybersecurity Ops</option>
-                        <option value="Brand Designers">Graphic & Brand Design</option>
+                        <option>UI/UX & Product Design</option>
+                        <option>Graphic & Brand Design</option>
+                        <option>Web Development</option>
+                        <option>Software Engineering</option>
+                        <option>Data Analysis</option>
+                        <option>Cybersecurity</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1 font-semibold">
-                        Open Headcount
-                      </label>
+                      <label className="block mb-1 font-semibold text-[#000F38]">Talent Count</label>
                       <select
                         value={formData.talentCount}
                         onChange={(e) => setFormData({ ...formData, talentCount: e.target.value })}
-                        className="w-full px-2.5 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-xs text-brand-navy focus:outline-none focus:border-brand-blue"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0040E9] focus:outline-none bg-white"
                       >
-                        <option value="1-3">1 – 3 Candidates</option>
-                        <option value="4-10">4 – 10 Candidates</option>
-                        <option value="10+">10+ Cohort Hire</option>
+                        <option>1-2 Candidates</option>
+                        <option>3-5 Candidates</option>
+                        <option>6-10 Candidates</option>
+                        <option>10+ (Cohort Hiring)</option>
                       </select>
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 font-semibold text-[#000F38]">Message / Specific Requirements</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Describe the skills and timeline you require..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0040E9] focus:outline-none"
+                    ></textarea>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-brand-navy hover:bg-black text-white py-3.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+                    className="w-full bg-[#0040E9] hover:bg-[#0035C2] text-white py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-2 shadow-md"
                   >
-                    Submit Talent Request
-                    <ArrowRight className="w-4 h-4" />
+                    <Send className="w-4 h-4" />
+                    Submit Request
                   </button>
                 </form>
               </div>
             ) : (
-              <div className="text-center py-6">
+              <div className="text-center py-8">
                 <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-brand-navy mb-2">
-                  Request Received!
-                </h3>
-                <p className="text-sm text-brand-gray-600 mb-6">
-                  Our Partnerships Lead will review your headcount request and reach out to <strong>{formData.workEmail}</strong> within 24 hours with vetted candidate portfolios.
+                <h3 className="text-2xl font-bold text-[#000F38] mb-2">Request Received</h3>
+                <p className="text-sm text-gray-600 max-w-sm mx-auto mb-6">
+                  Thank you! Our talent team will reach out to <span className="font-semibold">{formData.workEmail}</span> with suitable candidate profiles.
                 </p>
                 <button
-                  onClick={handleClose}
-                  className="bg-brand-navy text-white px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider"
+                  onClick={() => { setModalOpen(false); setSubmitted(false); }}
+                  className="bg-[#000F38] text-white px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wider"
                 >
-                  Done
+                  Close Window
                 </button>
               </div>
             )}
