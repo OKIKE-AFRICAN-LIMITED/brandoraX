@@ -26,10 +26,10 @@ export const AboutSection: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 px-4 sm:px-6 bg-white border-b border-brand-gray-200 scroll-mt-20">
+    <section id="about" className="py-24 px-4 sm:px-6 bg-white border-b border-brand-gray-200 scroll-mt-20 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-3xl mb-16">
-          <div className="text-xs font-mono text-brand-blue uppercase tracking-widest font-bold mb-3">
+          <div className="text-xs text-brand-blue uppercase tracking-widest font-bold mb-3">
             About BrandoraX
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-navy tracking-tight leading-tight mb-4">
@@ -47,7 +47,7 @@ export const AboutSection: React.FC = () => {
               <div className="w-12 h-12 rounded-xl bg-white/10 text-brand-amber flex items-center justify-center mb-6">
                 <Compass className="w-6 h-6" />
               </div>
-              <div className="text-xs font-mono uppercase tracking-widest text-brand-amber font-bold mb-2">
+              <div className="text-xs uppercase tracking-widest text-brand-amber font-bold mb-2">
                 Our Vision
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold mb-4">
@@ -58,7 +58,7 @@ export const AboutSection: React.FC = () => {
               </p>
             </div>
 
-            <div className="pt-8 border-t border-white/10 mt-6 text-xs font-mono text-gray-400">
+            <div className="pt-8 border-t border-white/10 mt-6 text-xs text-gray-400 font-medium">
               Outcome-Based · Pan-African · High-Accountability
             </div>
           </div>
@@ -68,7 +68,7 @@ export const AboutSection: React.FC = () => {
               <div className="w-12 h-12 rounded-xl bg-brand-blue text-white flex items-center justify-center mb-6">
                 <Target className="w-6 h-6" />
               </div>
-              <div className="text-xs font-mono uppercase tracking-widest text-brand-blue font-bold mb-2">
+              <div className="text-xs uppercase tracking-widest text-brand-blue font-bold mb-2">
                 Our Mission
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy mb-4">
@@ -79,7 +79,7 @@ export const AboutSection: React.FC = () => {
               </p>
             </div>
 
-            <div className="pt-8 border-t border-brand-gray-200 mt-6 text-xs font-mono text-brand-blue font-semibold">
+            <div className="pt-8 border-t border-brand-gray-200 mt-6 text-xs text-brand-blue font-semibold">
               Practical Impact · Excellence · Integrity · Community
             </div>
           </div>
@@ -87,7 +87,7 @@ export const AboutSection: React.FC = () => {
 
         {/* The 4 Pathways of the Ecosystem */}
         <div>
-          <div className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-3">
+          <div className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-3">
             The BrandoraX Ecosystem
           </div>
           <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy mb-8">

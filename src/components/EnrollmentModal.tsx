@@ -46,7 +46,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
       setIsProcessing(false);
       const studentRecord: StudentProfile = {
         fullName: formData.fullName || 'Student Learner',
-        email: formData.email || 'learner@brandorax.com',
+        email: formData.email || 'learner@brandorax.africa',
         phone: formData.phone || '+234 800 000 0000',
         country: formData.country,
         trackId: selectedTrackId,
@@ -72,45 +72,45 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-navy/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-brand-gray-200 relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000F38]/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-gray-200 relative overflow-hidden">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full hover:bg-brand-gray-100 text-brand-gray-500 hover:text-brand-navy transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-brand-navy transition-colors"
           aria-label="Close Modal"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Stepper Header */}
+        {/* Stepper Header in Brand Font */}
         <div className="mb-6">
-          <div className="flex items-center justify-between text-xs font-mono text-brand-gray-500 mb-2 font-semibold">
-            <span className="text-brand-blue uppercase">
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-2 font-bold tracking-wider uppercase">
+            <span className="text-[#0040E9]">
               Step {step} of 4: {
-                step === 1 ? 'Select Discipline' :
+                step === 1 ? 'Select Programme' :
                 step === 2 ? 'Personal Details' :
                 step === 3 ? 'Tuition & Payment' : 'Enrollment Confirmed'
               }
             </span>
             <span>{step === 4 ? '100%' : `${Math.round((step / 4) * 100)}%`}</span>
           </div>
-          <div className="w-full h-1.5 bg-brand-gray-200 rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-brand-blue transition-all duration-300"
+              className="h-full bg-[#0040E9] transition-all duration-300"
               style={{ width: `${(step / 4) * 100}%` }}
             ></div>
           </div>
         </div>
 
-        {/* STEP 1: Select Track */}
+        {/* STEP 1: Select Programme */}
         {step === 1 && (
           <div>
-            <h3 className="text-2xl font-extrabold text-brand-navy mb-2">
-              Select Your Learning Discipline
+            <h3 className="text-2xl font-extrabold text-[#000F38] mb-2">
+              Select Your Learning Programme
             </h3>
-            <p className="text-sm text-brand-gray-600 mb-6">
-              Choose the career track you want to master. All tracks include weekly 1-on-1 practitioner pull-request reviews.
+            <p className="text-sm text-gray-600 mb-6">
+              Choose the program you want to master. All tracks include weekly 1-on-1 practitioner code critiques and verified portfolio builds.
             </p>
 
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1 mb-6">
@@ -120,27 +120,27 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   onClick={() => setSelectedTrackId(prog.id)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                     selectedTrackId === prog.id
-                      ? 'border-brand-blue bg-brand-blue-surface shadow-sm'
-                      : 'border-brand-gray-200 hover:border-brand-gray-300 bg-white'
+                      ? 'border-[#0040E9] bg-blue-50/50 shadow-sm'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
                   }`}
                 >
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold uppercase text-brand-blue">
+                      <span className="text-xs font-bold uppercase text-[#0040E9]">
                         {prog.category}
                       </span>
-                      <span className="text-xs font-mono text-brand-gray-400">· {prog.duration}</span>
+                      <span className="text-xs text-gray-500 font-medium">· {prog.duration}</span>
                     </div>
-                    <div className="text-sm font-bold text-brand-navy mt-0.5">
+                    <div className="text-sm font-bold text-[#000F38] mt-0.5">
                       {prog.title}
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <div className="text-xs font-mono font-bold text-brand-navy">
+                    <div className="text-xs font-bold text-[#000F38]">
                       {prog.tuition.upfront}
                     </div>
-                    <span className="text-[10px] font-mono text-brand-gray-500">
+                    <span className="text-[11px] text-gray-500 font-medium">
                       Cohort 1
                     </span>
                   </div>
@@ -150,9 +150,9 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
 
             <button
               onClick={() => setStep(2)}
-              className="w-full bg-brand-blue hover:bg-brand-blue-hover text-white py-3.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+              className="w-full bg-[#0040E9] hover:bg-[#0035C2] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
             >
-              Continue to Student Info
+              <span>Continue to Student Info</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -161,20 +161,20 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
         {/* STEP 2: Student Contact Details */}
         {step === 2 && (
           <div>
-            <h3 className="text-2xl font-extrabold text-brand-navy mb-2">
+            <h3 className="text-2xl font-extrabold text-[#000F38] mb-2">
               Student Registration
             </h3>
-            <p className="text-sm text-brand-gray-600 mb-6">
-              Enrolling in: <strong className="text-brand-blue">{currentTrack.title}</strong>
+            <p className="text-sm text-gray-600 mb-6">
+              Enrolling in: <strong className="text-[#0040E9]">{currentTrack.title}</strong>
             </p>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1.5 font-semibold">
+                <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                   Full Legal Name *
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-brand-gray-400 absolute left-3.5 top-3.5" />
+                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
                     name="fullName"
@@ -182,17 +182,17 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     placeholder="e.g. Oluwaseun Adeleke"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1.5 font-semibold">
+                <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-brand-gray-400 absolute left-3.5 top-3.5" />
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
                   <input
                     type="email"
                     name="email"
@@ -200,38 +200,38 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     placeholder="e.g. name@domain.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1.5 font-semibold">
+                  <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                     WhatsApp Phone *
                   </label>
                   <div className="relative">
-                    <Phone className="w-4 h-4 text-brand-gray-400 absolute left-3 top-3.5" />
+                    <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
                     <input
                       type="tel"
                       name="phone"
                       placeholder="+234..."
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-9 pr-3 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                      className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-brand-gray-600 mb-1.5 font-semibold">
+                  <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                     Country
                   </label>
                   <select
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2.5 bg-brand-gray-50 border border-brand-gray-300 rounded-md text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   >
                     <option value="Nigeria">Nigeria (₦ NGN)</option>
                     <option value="Ghana">Ghana (GH₵ GHS)</option>
@@ -249,7 +249,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="px-4 py-3 border border-brand-gray-300 hover:bg-brand-gray-100 rounded-md text-xs font-mono uppercase text-brand-gray-600 transition-colors"
+                className="px-4 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
               >
                 Back
               </button>
@@ -261,9 +261,9 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   }
                   setStep(3);
                 }}
-                className="flex-1 bg-brand-blue hover:bg-brand-blue-hover text-white py-3 rounded-md font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+                className="flex-1 bg-[#0040E9] hover:bg-[#0035C2] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
               >
-                Proceed to Tuition Plan
+                <span>Proceed to Tuition Plan</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -273,10 +273,10 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
         {/* STEP 3: Payment & Tuition Plan */}
         {step === 3 && (
           <div>
-            <h3 className="text-2xl font-extrabold text-brand-navy mb-2">
+            <h3 className="text-2xl font-extrabold text-[#000F38] mb-2">
               Tuition & Payment Method
             </h3>
-            <p className="text-sm text-brand-gray-600 mb-6">
+            <p className="text-sm text-gray-600 mb-6">
               Track: <strong>{currentTrack.title}</strong>
             </p>
 
@@ -286,14 +286,14 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                 onClick={() => setFormData({ ...formData, paymentPlan: 'upfront' })}
                 className={`p-4 rounded-xl border cursor-pointer transition-all ${
                   formData.paymentPlan === 'upfront'
-                    ? 'border-brand-blue bg-brand-blue-surface shadow-sm'
-                    : 'border-brand-gray-200 bg-brand-gray-50'
+                    ? 'border-[#0040E9] bg-blue-50/50 shadow-sm'
+                    : 'border-gray-200 bg-gray-50'
                 }`}
               >
-                <div className="text-xs font-mono font-bold uppercase text-brand-blue mb-1">
+                <div className="text-xs font-bold uppercase text-[#0040E9] mb-1">
                   Full Tuition
                 </div>
-                <div className="text-lg font-bold text-brand-navy">
+                <div className="text-lg font-bold text-[#000F38]">
                   {currentTrack.tuition.upfront}
                 </div>
                 <div className="text-[11px] text-emerald-600 font-semibold mt-1">
@@ -305,40 +305,40 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                 onClick={() => setFormData({ ...formData, paymentPlan: 'installment' })}
                 className={`p-4 rounded-xl border cursor-pointer transition-all ${
                   formData.paymentPlan === 'installment'
-                    ? 'border-brand-blue bg-brand-blue-surface shadow-sm'
-                    : 'border-brand-gray-200 bg-brand-gray-50'
+                    ? 'border-[#0040E9] bg-blue-50/50 shadow-sm'
+                    : 'border-gray-200 bg-gray-50'
                 }`}
               >
-                <div className="text-xs font-mono font-bold uppercase text-brand-gray-600 mb-1">
+                <div className="text-xs font-bold uppercase text-gray-600 mb-1">
                   Installments
                 </div>
-                <div className="text-base font-bold text-brand-navy">
+                <div className="text-base font-bold text-[#000F38]">
                   {currentTrack.tuition.installments}
                 </div>
-                <div className="text-[11px] text-brand-gray-500 mt-1">
+                <div className="text-[11px] text-gray-500 mt-1">
                   Pay monthly as you learn
                 </div>
               </div>
             </div>
 
             {/* Simulated Payment Providers */}
-            <div className="bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-4 mb-6">
-              <div className="flex items-center justify-between text-xs font-mono text-brand-gray-600 mb-3">
-                <span className="flex items-center gap-1.5 font-bold text-brand-navy">
-                  <CreditCard className="w-4 h-4 text-brand-blue" />
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+              <div className="flex items-center justify-between text-xs text-gray-600 mb-3 font-semibold">
+                <span className="flex items-center gap-1.5 font-bold text-[#000F38]">
+                  <CreditCard className="w-4 h-4 text-[#0040E9]" />
                   Supported Checkout Channels
                 </span>
                 <span className="text-emerald-600 font-bold">256-Bit SSL Encrypted</span>
               </div>
-              <div className="flex items-center gap-3 text-xs text-brand-gray-500 font-mono">
-                <span className="bg-white px-2 py-1 rounded border border-brand-gray-200 font-bold text-brand-navy">
-                  Paystack (Debit / Transfer)
+              <div className="flex items-center gap-2.5 text-xs text-gray-600 font-medium">
+                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
+                  Paystack
                 </span>
-                <span className="bg-white px-2 py-1 rounded border border-brand-gray-200 font-bold text-brand-navy">
+                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
                   Flutterwave
                 </span>
-                <span className="bg-white px-2 py-1 rounded border border-brand-gray-200 font-bold text-brand-navy">
-                  USD Stripe
+                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
+                  Stripe (USD)
                 </span>
               </div>
             </div>
@@ -346,14 +346,14 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="px-4 py-3 border border-brand-gray-300 hover:bg-brand-gray-100 rounded-md text-xs font-mono uppercase text-brand-gray-600 transition-colors"
+                className="px-4 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
               >
                 Back
               </button>
               <button
                 disabled={isProcessing}
                 onClick={handleCompleteEnrollment}
-                className="flex-1 bg-brand-navy hover:bg-black text-white py-3 rounded-md font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                className="flex-1 bg-[#000F38] hover:bg-black text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
               >
                 {isProcessing ? (
                   <span className="inline-flex items-center gap-2">
@@ -362,7 +362,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   </span>
                 ) : (
                   <>
-                    Confirm & Complete Enrollment
+                    <span>Confirm & Complete Enrollment</span>
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
                   </>
                 )}
@@ -371,53 +371,53 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
           </div>
         )}
 
-        {/* STEP 4: Success Confirmation & Telegram Community Link */}
+        {/* STEP 4: Success Confirmation */}
         {step === 4 && (
           <div className="text-center py-4">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
               <CheckCircle className="w-8 h-8" />
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy mb-2">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#000F38] mb-2">
               Welcome to BrandoraX!
             </h3>
 
-            <p className="text-sm text-brand-gray-600 max-w-md mx-auto mb-6">
+            <p className="text-sm text-gray-600 max-w-md mx-auto mb-6">
               Congratulations <strong>{formData.fullName || 'Learner'}</strong>, you are officially registered for <strong>{currentTrack.title}</strong> (Cohort 1).
             </p>
 
             {/* Telegram Community Induction Callout */}
-            <div className="bg-brand-blue-surface border border-brand-blue/30 rounded-xl p-5 mb-6 text-left">
+            <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-5 mb-6 text-left">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 rounded-full bg-brand-blue text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[#0040E9] text-white flex items-center justify-center flex-shrink-0">
                   <Send className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold">
+                  <div className="text-xs uppercase tracking-wider text-[#0040E9] font-bold">
                     Crucial Next Step
                   </div>
-                  <div className="text-sm font-bold text-brand-navy">
+                  <div className="text-sm font-bold text-[#000F38]">
                     Join Official Telegram Cohort Channel
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-brand-gray-600 leading-relaxed mb-3">
+              <p className="text-xs text-gray-600 leading-relaxed mb-3">
                 All live Google Meet links, class reminders, mentor announcements, and sprint repos are shared directly in the Telegram channel.
               </p>
               <a
                 href="https://t.me/brandorax_community"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-brand-blue hover:bg-brand-blue-hover text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded inline-flex items-center gap-2 transition-colors"
+                className="bg-[#0040E9] hover:bg-[#0035C2] text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg inline-flex items-center gap-2 transition-colors shadow-sm"
               >
-                Join Telegram Community
+                <span>Join Telegram Community</span>
                 <ArrowRight className="w-3 h-3" />
               </a>
             </div>
 
             <button
               onClick={onClose}
-              className="w-full bg-brand-navy hover:bg-black text-white py-3.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all"
+              className="w-full bg-[#000F38] hover:bg-black text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md"
             >
               Open My Student Portal
             </button>

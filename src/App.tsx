@@ -14,11 +14,13 @@ import { ApplyPage } from './pages/ApplyPage';
 import { DashboardPage } from './pages/DashboardPage';
 
 import { TrackMatcherModal } from './components/TrackMatcherModal';
+import { FAQModal } from './components/FAQModal';
 import { StudentProfile } from './types';
 
 export const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
+  const [isFAQOpen, setIsFAQOpen] = useState<boolean>(false);
 
   const [student, setStudent] = useState<StudentProfile | null>(() => {
     try {
@@ -39,17 +41,18 @@ export const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-gray-50 text-brand-navy">
+    <div className="min-h-screen flex flex-col bg-brand-gray-50 text-brand-navy overflow-x-hidden w-full max-w-full">
       <ScrollToTop />
 
       {/* Persistent Multi-Page Navigation */}
       <Navbar
         onOpenQuiz={() => setIsQuizOpen(true)}
+        onOpenFAQ={() => setIsFAQOpen(true)}
         student={student}
       />
 
       {/* Multi-Page Route Switcher */}
-      <main className="flex-1">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden">
         <Routes>
           <Route
             path="/"
@@ -87,7 +90,10 @@ export const AppContent: React.FC = () => {
       </main>
 
       {/* Persistent Multi-Page Footer */}
-      <Footer />
+      <Footer 
+        onOpenFAQ={() => setIsFAQOpen(true)}
+        onOpenQuiz={() => setIsQuizOpen(true)}
+      />
 
       {/* Interactive Global Quiz Modal */}
       <TrackMatcherModal
@@ -98,6 +104,16 @@ export const AppContent: React.FC = () => {
         }}
         onOpenEnroll={(id) => {
           navigate(`/apply?track=${id}`);
+        }}
+      />
+
+      {/* Global Interactive FAQ Modal */}
+      <FAQModal
+        isOpen={isFAQOpen}
+        onClose={() => setIsFAQOpen(false)}
+        onOpenQuiz={() => {
+          setIsFAQOpen(false);
+          setIsQuizOpen(true);
         }}
       />
     </div>

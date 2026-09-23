@@ -44,7 +44,7 @@ export const ExploreProgramsSection: React.FC = () => {
   ];
 
   return (
-    <section id="programs" className="py-16 sm:py-24 px-4 sm:px-6 bg-white border-b border-gray-200">
+    <section id="programs" className="py-16 sm:py-24 px-4 sm:px-6 bg-white border-b border-gray-200 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Section Header matching exact Brief */}
         <ScrollReveal className="max-w-3xl mb-12 sm:mb-16">
@@ -55,7 +55,7 @@ export const ExploreProgramsSection: React.FC = () => {
             Learn skills that move with the real world.
           </h3>
           <p className="text-sm sm:text-base lg:text-lg text-[#000F38]/75 leading-relaxed font-normal">
-            Our programs focus on practical, in-demand digital disciplines designed to help you develop capabilities that can be applied in professional environments.
+            Our programs focus on practical, in-demand digital programmes designed to help you develop capabilities that can be applied in professional environments.
           </p>
         </ScrollReveal>
 
@@ -76,7 +76,7 @@ export const ExploreProgramsSection: React.FC = () => {
                 </p>
 
                 <div className="bg-[#F8FAFC] border border-gray-100 rounded-xl p-4 mb-8">
-                  <div className="text-xs font-bold uppercase tracking-wider text-[#0040E9] mb-2 font-mono">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#0040E9] mb-2">
                     Focus:
                   </div>
                   <div className="text-xs text-gray-700 leading-relaxed">

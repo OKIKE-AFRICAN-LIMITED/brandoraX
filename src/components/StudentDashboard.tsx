@@ -22,7 +22,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
 
   const checklistItems = [
     { label: 'Student Profile Created', done: true },
-    { label: 'Discipline Track Assigned', done: true },
+    { label: 'Programme Track Assigned', done: true },
     { label: 'Tuition Arrangement Confirmed', done: true },
     { label: 'Joined Telegram Community', done: telegramJoined },
     { label: 'Orientation Live Stream (Google Meet)', done: false }
@@ -39,17 +39,17 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono uppercase tracking-wider text-brand-amber font-bold">
+                <span className="text-xs uppercase tracking-wider text-brand-amber font-bold">
                   {student?.cohort || 'Cohort 1'}
                 </span>
-                <span className="text-xs font-mono bg-white/10 px-2 py-0.5 rounded text-gray-300">
+                <span className="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-300">
                   Active Learner
                 </span>
               </div>
               <h2 className="text-2xl font-extrabold text-white">
                 {student?.fullName || 'Welcome, Learner'}
               </h2>
-              <div className="text-xs font-mono text-gray-300">
+              <div className="text-xs text-gray-300">
                 Track: <strong className="text-brand-amber">{currentTrack.title}</strong> · {student?.email}
               </div>
             </div>
@@ -73,10 +73,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             {/* Enrollment Status Checklist (5/12) */}
             <div className="md:col-span-5 bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold">
+                <h3 className="text-xs uppercase tracking-wider text-brand-blue font-bold">
                   Enrollment Readiness
                 </h3>
-                <span className="text-xs font-mono font-bold text-brand-navy">
+                <span className="text-xs font-bold text-brand-navy">
                   {checklistItems.filter((i) => i.done).length} of {checklistItems.length} Complete
                 </span>
               </div>
@@ -85,7 +85,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                 {checklistItems.map((item, idx) => (
                   <div
                     key={idx}
-                    className={`flex items-center justify-between p-2.5 rounded-lg text-xs font-mono ${
+                    className={`flex items-center justify-between p-2.5 rounded-lg text-xs ${
                       item.done
                         ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
                         : 'bg-white text-brand-gray-600 border border-brand-gray-200'
@@ -116,7 +116,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             {/* Next Live Session / Google Meet Card (7/12) */}
             <div className="md:col-span-7 bg-brand-blue-surface border border-brand-blue/30 rounded-xl p-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-brand-blue font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <Video className="w-4 h-4 text-brand-blue" />
                     Upcoming Live Induction Session
@@ -133,14 +133,14 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                   Meet your lead practitioner tutor, walkthrough the project grading rubric, setup your environment, and receive your Week 1 brief.
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 bg-white p-3 rounded-lg border border-brand-gray-200 mb-4 text-xs font-mono">
+                <div className="grid grid-cols-2 gap-4 bg-white p-3 rounded-lg border border-brand-gray-200 mb-4 text-xs">
                   <div>
                     <span className="text-brand-gray-400 block text-[10px] uppercase">Date & Time</span>
-                    <strong className="text-brand-navy">Saturday, 11:00 AM WAT</strong>
+                    <strong className="text-brand-navy font-semibold">Saturday, 11:00 AM WAT</strong>
                   </div>
                   <div>
                     <span className="text-brand-gray-400 block text-[10px] uppercase">Platform</span>
-                    <strong className="text-brand-blue">Google Meet (Encrypted)</strong>
+                    <strong className="text-brand-blue font-semibold">Google Meet (Encrypted)</strong>
                   </div>
                 </div>
               </div>
@@ -172,10 +172,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
           {/* Scaffolded LMS Sections: Sprints, Syllabus & Deliverables */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-mono uppercase tracking-wider text-brand-blue font-bold">
+              <h3 className="text-sm uppercase tracking-wider text-brand-blue font-bold">
                 Active Learning Sprints ({currentTrack.title})
               </h3>
-              <span className="text-xs font-mono text-brand-gray-500">
+              <span className="text-xs text-brand-gray-500 font-medium">
                 Phase 1 Student Foundation
               </span>
             </div>
@@ -186,9 +186,9 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                   key={idx}
                   className="p-5 rounded-xl border border-brand-gray-200 bg-brand-gray-50/50 hover:border-brand-blue/50 transition-all"
                 >
-                  <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-brand-blue font-bold">{sprint.week}</span>
-                    <span className="bg-white px-2 py-0.5 rounded border border-brand-gray-200 text-brand-gray-500">
+                    <span className="bg-white px-2 py-0.5 rounded border border-brand-gray-200 text-brand-gray-500 font-medium">
                       Sprint 0{idx + 1}
                     </span>
                   </div>
@@ -200,9 +200,9 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                     {sprint.description}
                   </p>
 
-                  <div className="bg-white p-2.5 rounded border border-brand-gray-200 text-xs font-mono text-brand-navy flex items-center justify-between">
+                  <div className="bg-white p-2.5 rounded border border-brand-gray-200 text-xs text-brand-navy flex items-center justify-between">
                     <span className="text-brand-gray-500">Deliverable:</span>
-                    <strong className="text-brand-blue truncate ml-2">{sprint.deliverable}</strong>
+                    <strong className="text-brand-blue truncate ml-2 font-medium">{sprint.deliverable}</strong>
                   </div>
                 </div>
               ))}

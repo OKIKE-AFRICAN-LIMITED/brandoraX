@@ -13,10 +13,10 @@ export const TrackDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-brand-gray-50 min-h-screen pb-24">
+    <div className="bg-brand-gray-50 min-h-screen pb-24 w-full max-w-full overflow-hidden">
       {/* Breadcrumb Bar */}
       <div className="bg-white border-b border-brand-gray-200 py-3.5 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs font-mono text-brand-gray-500">
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs font-medium text-brand-gray-500">
           <Link to="/" className="hover:text-brand-blue">Home</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <Link to="/academy" className="hover:text-brand-blue">Academy</Link>
@@ -31,14 +31,14 @@ export const TrackDetailPage: React.FC = () => {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-blue bg-brand-blue-light px-3 py-1 rounded">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-blue bg-brand-blue-light px-3 py-1 rounded">
               {program.category}
             </span>
-            <span className="text-xs font-mono text-gray-300 bg-white/10 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/10">
+            <span className="text-xs font-medium text-gray-300 bg-white/10 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/10">
               <Clock className="w-3.5 h-3.5 text-brand-amber" />
               {program.duration}
             </span>
-            <span className="text-xs font-mono text-gray-300 bg-white/10 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/10">
+            <span className="text-xs font-medium text-gray-300 bg-white/10 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/10">
               <Calendar className="w-3.5 h-3.5 text-brand-amber" />
               {program.nextCohortDate}
             </span>
@@ -61,7 +61,7 @@ export const TrackDetailPage: React.FC = () => {
               <ArrowRight className="w-4 h-4" />
             </Link>
 
-            <div className="text-xs font-mono text-gray-300 flex items-center gap-2">
+            <div className="text-xs font-medium text-gray-300 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span>Tuition: <strong className="text-white">{program.tuition.upfront}</strong></span>
             </div>
@@ -76,8 +76,8 @@ export const TrackDetailPage: React.FC = () => {
           <div className="lg:col-span-8 space-y-12">
             {/* Description */}
             <div className="bg-white border border-brand-gray-200 rounded-2xl p-8 shadow-sm">
-              <h2 className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-3">
-                Discipline Overview
+              <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-3">
+                Programme Overview
               </h2>
               <p className="text-brand-gray-700 text-base leading-relaxed">
                 {program.description}
@@ -88,14 +88,14 @@ export const TrackDetailPage: React.FC = () => {
             <div className="bg-white border border-brand-gray-200 rounded-2xl p-8 shadow-sm">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-1">
+                  <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-1">
                     Academic Roadmap
                   </h2>
                   <h3 className="text-2xl font-extrabold text-brand-navy">
                     Week-by-Week Learning Sprints
                   </h3>
                 </div>
-                <span className="text-xs font-mono text-brand-gray-500 bg-brand-gray-100 px-3 py-1 rounded">
+                <span className="text-xs font-medium text-brand-gray-500 bg-brand-gray-100 px-3 py-1 rounded">
                   {program.commitment}
                 </span>
               </div>
@@ -106,9 +106,9 @@ export const TrackDetailPage: React.FC = () => {
                     key={idx}
                     className="bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-6 hover:border-brand-blue/60 transition-all"
                   >
-                    <div className="flex items-center justify-between text-xs font-mono mb-2">
+                    <div className="flex items-center justify-between text-xs mb-2">
                       <span className="text-brand-blue font-bold uppercase">{sprint.week}</span>
-                      <span className="bg-white border border-brand-gray-200 px-2 py-0.5 rounded text-brand-gray-500">
+                      <span className="bg-white border border-brand-gray-200 px-2 py-0.5 rounded text-brand-gray-500 font-medium">
                         Sprint 0{idx + 1}
                       </span>
                     </div>
@@ -121,7 +121,7 @@ export const TrackDetailPage: React.FC = () => {
                       {sprint.description}
                     </p>
 
-                    <div className="bg-white border border-brand-gray-200 rounded-lg p-3 text-xs font-mono flex items-center justify-between">
+                    <div className="bg-white border border-brand-gray-200 rounded-lg p-3 text-xs flex items-center justify-between">
                       <span className="text-brand-gray-500">Deliverable Shipped:</span>
                       <strong className="text-brand-blue font-bold">{sprint.deliverable}</strong>
                     </div>
@@ -132,7 +132,7 @@ export const TrackDetailPage: React.FC = () => {
 
             {/* Capstone Project */}
             <div className="bg-brand-navy text-white rounded-2xl p-8 border border-brand-navy-light shadow-brand">
-              <div className="text-xs font-mono uppercase tracking-wider text-brand-amber font-bold mb-2">
+              <div className="text-xs uppercase tracking-wider text-brand-amber font-bold mb-2">
                 Production Capstone Project
               </div>
               <h3 className="text-2xl font-extrabold mb-3">
@@ -145,7 +145,7 @@ export const TrackDetailPage: React.FC = () => {
                 {program.capstoneProject.technologies.map((t) => (
                   <span
                     key={t}
-                    className="text-xs font-mono bg-white/10 text-white px-2.5 py-1 rounded border border-white/10"
+                    className="text-xs bg-white/10 text-white px-2.5 py-1 rounded border border-white/10 font-medium"
                   >
                     {t}
                   </span>
@@ -157,13 +157,13 @@ export const TrackDetailPage: React.FC = () => {
           {/* Right Column (4 cols): Sticky Quick Facts & Tuition Card */}
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white border border-brand-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm sticky top-28">
-              <div className="text-xs font-mono uppercase tracking-wider text-brand-gray-500 font-semibold mb-1">
-                Discipline Investment
+              <div className="text-xs uppercase tracking-wider text-brand-gray-500 font-semibold mb-1">
+                Programme Tuition
               </div>
               <div className="text-3xl font-extrabold text-brand-navy mb-1">
                 {program.tuition.upfront}
               </div>
-              <div className="text-xs font-mono text-brand-blue font-semibold mb-6">
+              <div className="text-xs text-brand-blue font-semibold mb-6">
                 Installment: {program.tuition.installments}
               </div>
 
@@ -175,7 +175,7 @@ export const TrackDetailPage: React.FC = () => {
               </Link>
 
               {/* Quick Details Checklist */}
-              <div className="space-y-4 pt-6 border-t border-brand-gray-200 text-xs font-mono text-brand-gray-700">
+              <div className="space-y-4 pt-6 border-t border-brand-gray-200 text-xs text-brand-gray-700">
                 <div className="flex items-center justify-between">
                   <span className="text-brand-gray-500">Duration:</span>
                   <strong className="text-brand-navy">{program.duration}</strong>
@@ -196,14 +196,14 @@ export const TrackDetailPage: React.FC = () => {
 
               {/* Tools list */}
               <div className="pt-6 border-t border-brand-gray-200 mt-6">
-                <div className="text-[11px] font-mono uppercase text-brand-gray-500 font-semibold mb-2">
+                <div className="text-[11px] uppercase text-brand-gray-500 font-semibold mb-2">
                   Tools You Will Master:
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {program.tools.map((t) => (
                     <span
                       key={t}
-                      className="text-xs font-mono bg-brand-gray-100 text-brand-navy px-2 py-0.5 rounded border border-brand-gray-200"
+                      className="text-xs bg-brand-gray-100 text-brand-navy px-2 py-0.5 rounded border border-brand-gray-200 font-medium"
                     >
                       {t}
                     </span>
@@ -213,7 +213,7 @@ export const TrackDetailPage: React.FC = () => {
 
               {/* Career outcomes */}
               <div className="pt-6 border-t border-brand-gray-200 mt-6">
-                <div className="text-[11px] font-mono uppercase text-brand-gray-500 font-semibold mb-2">
+                <div className="text-[11px] uppercase text-brand-gray-500 font-semibold mb-2">
                   Target Roles:
                 </div>
                 <ul className="space-y-1.5 text-xs text-brand-navy font-sans">

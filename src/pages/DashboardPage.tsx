@@ -28,14 +28,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
 
   const checklistItems = [
     { label: 'Student Profile Created', done: true },
-    { label: 'Discipline Track Assigned', done: true },
+    { label: 'Programme Track Assigned', done: true },
     { label: 'Tuition Arrangement Confirmed', done: true },
     { label: 'Joined Telegram Community', done: telegramJoined },
     { label: 'Orientation Live Stream (Google Meet)', done: false }
   ];
 
   return (
-    <div className="bg-brand-gray-50 min-h-screen py-12 px-4 sm:px-6">
+    <div className="bg-brand-gray-50 min-h-screen py-12 px-4 sm:px-6 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Portal Header Banner */}
         <div className="p-6 sm:p-8 bg-brand-navy text-white rounded-2xl shadow-brand flex flex-col md:flex-row md:items-center justify-between gap-6 border border-brand-navy-light">
@@ -45,17 +45,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">
+                <span className="text-xs uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">
                   {activeStudent.cohort}
                 </span>
-                <span className="text-xs font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
+                <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-medium">
                   Active Enrollment
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
                 {activeStudent.fullName}
               </h1>
-              <div className="text-xs font-mono text-gray-300">
+              <div className="text-xs text-gray-300">
                 Track: <strong className="text-brand-amber">{currentTrack.title}</strong> · {activeStudent.email}
               </div>
             </div>
@@ -64,7 +64,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               to={`/academy/${currentTrack.slug}`}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded text-xs font-mono uppercase tracking-wider transition-colors inline-flex items-center gap-1.5"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded text-xs uppercase tracking-wider font-semibold transition-colors inline-flex items-center gap-1.5"
             >
               <BookOpen className="w-4 h-4" />
               Syllabus
@@ -87,10 +87,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
           {/* Enrollment Status Checklist (5 cols) */}
           <div className="md:col-span-5 bg-white border border-brand-gray-200 rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold">
+              <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold">
                 Induction Checklist
               </h2>
-              <span className="text-xs font-mono font-bold text-brand-navy">
+              <span className="text-xs font-bold text-brand-navy">
                 {checklistItems.filter((i) => i.done).length} of {checklistItems.length} Complete
               </span>
             </div>
@@ -99,7 +99,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
               {checklistItems.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center justify-between p-3 rounded-xl text-xs font-mono transition-all ${
+                  className={`flex items-center justify-between p-3 rounded-xl text-xs transition-all ${
                     item.done
                       ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
                       : 'bg-brand-gray-50 text-brand-gray-700 border border-brand-gray-200'
@@ -130,7 +130,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
           {/* Upcoming Live Session on Google Meet (7 cols) */}
           <div className="md:col-span-7 bg-brand-blue-surface border border-brand-blue/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-sm">
             <div>
-              <div className="flex items-center justify-between text-xs font-mono mb-3">
+              <div className="flex items-center justify-between text-xs mb-3">
                 <span className="text-brand-blue font-bold uppercase tracking-wider flex items-center gap-1.5">
                   <Video className="w-4 h-4 text-brand-blue" />
                   Upcoming Live Google Meet Session
@@ -147,14 +147,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
                 Meet your lead practitioner, walkthrough the project rubrics, set up your GitHub repository, and receive the Week 1 milestone brief.
               </p>
 
-              <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-brand-gray-200 mb-6 text-xs font-mono">
+              <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-brand-gray-200 mb-6 text-xs">
                 <div>
                   <span className="text-brand-gray-400 block text-[10px] uppercase font-semibold">Date & Time</span>
-                  <strong className="text-brand-navy text-sm">Saturday, 11:00 AM WAT</strong>
+                  <strong className="text-brand-navy text-sm font-semibold">Saturday, 11:00 AM WAT</strong>
                 </div>
                 <div>
                   <span className="text-brand-gray-400 block text-[10px] uppercase font-semibold">Platform</span>
-                  <strong className="text-brand-blue text-sm">Google Meet (Live Room)</strong>
+                  <strong className="text-brand-blue text-sm font-semibold">Google Meet (Live Room)</strong>
                 </div>
               </div>
             </div>
@@ -187,14 +187,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
         <div className="bg-white border border-brand-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-1">
+              <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-1">
                 Active Sprints
               </h2>
               <h3 className="text-xl font-bold text-brand-navy">
                 {currentTrack.title} Sprints
               </h3>
             </div>
-            <span className="text-xs font-mono text-brand-gray-500 bg-brand-gray-100 px-3 py-1 rounded">
+            <span className="text-xs text-brand-gray-500 bg-brand-gray-100 px-3 py-1 rounded font-medium">
               Phase 1 LMS Foundation
             </span>
           </div>
@@ -206,7 +206,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
                 className="p-6 rounded-xl border border-brand-gray-200 bg-brand-gray-50/70 hover:border-brand-blue/50 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <div className="flex items-center justify-between text-xs mb-2">
                     <span className="text-brand-blue font-bold">{sprint.week}</span>
                     <span className="bg-white px-2.5 py-0.5 rounded border border-brand-gray-200 text-brand-gray-600 font-semibold">
                       Sprint 0{idx + 1}
@@ -221,9 +221,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
                   </p>
                 </div>
 
-                <div className="bg-white p-3 rounded-lg border border-brand-gray-200 text-xs font-mono flex items-center justify-between">
+                <div className="bg-white p-3 rounded-lg border border-brand-gray-200 text-xs flex items-center justify-between">
                   <span className="text-brand-gray-500">Milestone Artifact:</span>
-                  <strong className="text-brand-blue truncate ml-2">{sprint.deliverable}</strong>
+                  <strong className="text-brand-blue truncate ml-2 font-medium">{sprint.deliverable}</strong>
                 </div>
               </div>
             ))}

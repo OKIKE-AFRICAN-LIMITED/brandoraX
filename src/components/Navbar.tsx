@@ -3,22 +3,24 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { 
   Menu, X, ArrowRight, ChevronDown, 
   Layout, Palette, Globe, Terminal, BarChart3, Shield,
-  LogIn
+  LogIn, HelpCircle
 } from 'lucide-react';
 import { StudentProfile } from '../types';
+import { SocialLinks } from './SocialLinks';
 
 interface NavbarProps {
   onOpenQuiz: () => void;
+  onOpenFAQ?: () => void;
   student: StudentProfile | null;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuiz,
+  onOpenFAQ,
   student
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -26,8 +28,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownOpen(false);
-    setMobileProgramsOpen(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open to prevent background interactions
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
 
   // Click outside to close dropdown
   useEffect(() => {
@@ -86,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Left: Brand Logo */}
@@ -126,7 +139,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="absolute top-full -left-4 pt-3 w-[560px] z-50 animate-fadeIn">
                   <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                     <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
-                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0040E9]">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#0040E9]">
                         All Programmes
                       </span>
                       <Link
@@ -198,7 +211,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 `py-2 transition-colors ${isActive ? 'text-[#0040E9] font-bold' : 'text-[#000F38]/80 hover:text-[#0040E9]'}`
               }
             >
-              For Companies
+              Partner with Us
             </NavLink>
 
             <NavLink
@@ -209,6 +222,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               About Us
             </NavLink>
+
+            {onOpenFAQ && (
+              <button
+                type="button"
+                onClick={onOpenFAQ}
+                className="py-2 text-[#000F38]/80 hover:text-[#0040E9] transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span>FAQs</span>
+                <HelpCircle className="w-3.5 h-3.5 text-[#0040E9]" />
+              </button>
+            )}
           </nav>
         </div>
 
@@ -249,6 +273,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Menu Trigger */}
         <div className="flex lg:hidden items-center gap-3">
+          {onOpenFAQ && (
+            <button
+              type="button"
+              onClick={onOpenFAQ}
+              className="p-1.5 text-[#000F38] hover:bg-gray-100 rounded-lg transition-colors text-xs font-bold flex items-center gap-1"
+              aria-label="FAQs"
+            >
+              <HelpCircle className="w-4 h-4 text-[#0040E9]" />
+              <span>FAQs</span>
+            </button>
+          )}
           <Link
             to="/apply"
             className="bg-[#0040E9] text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg"
@@ -266,48 +301,32 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Full-Screen Backdrop Overlay (Locks background interactions) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-gray-200 px-6 py-8 space-y-6 shadow-xl animate-fadeIn max-h-[85vh] overflow-y-auto">
-          <div className="space-y-4 text-sm font-bold text-[#000F38]">
-            {/* Programmes Accordion */}
-            <div>
-              <button
-                type="button"
-                onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
-                className="w-full flex items-center justify-between py-2 text-left"
-              >
-                <span>Programmes</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${mobileProgramsOpen ? 'rotate-180 text-[#0040E9]' : 'text-gray-400'}`} />
-              </button>
+        <div
+          className="fixed inset-0 top-20 bg-[#000F38]/70 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-              {mobileProgramsOpen && (
-                <div className="pl-3 mt-2 space-y-2 border-l-2 border-blue-100">
-                  {programs.map((p) => (
-                    <Link
-                      key={p.slug}
-                      to={`/academy/${p.slug}`}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1.5 text-xs font-semibold text-gray-700 hover:text-[#0040E9]"
-                    >
-                      {p.title}
-                    </Link>
-                  ))}
-                  <Link
-                    to="/academy"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block pt-2 text-xs font-bold text-[#0040E9]"
-                  >
-                    View All Syllabi →
-                  </Link>
-                </div>
-              )}
-            </div>
+      {/* Mobile Menu Drawer (Fixed overlay sheet) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 top-20 bottom-0 z-50 lg:hidden bg-white px-6 py-6 overflow-y-auto flex flex-col justify-between shadow-2xl animate-fadeIn">
+          <div className="space-y-4 text-sm font-bold text-[#000F38]">
+            {/* Programmes - Single Direct Link (No tracks shown as requested) */}
+            <Link
+              to="/academy"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base"
+            >
+              Programmes
+            </Link>
 
             <Link
               to="/community"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 hover:text-[#0040E9]"
+              className="block py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base"
             >
               Community
             </Link>
@@ -315,15 +334,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Link
               to="/talent-pipeline"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 hover:text-[#0040E9]"
+              className="block py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base"
             >
-              For Companies
+              Partner with Us
             </Link>
 
             <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 hover:text-[#0040E9]"
+              className="block py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base"
             >
               About Us
             </Link>
@@ -331,39 +350,70 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Link
               to="/apply"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 hover:text-[#0040E9]"
+              className="block py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base text-[#0040E9]"
             >
               Scholarships (Up to 90%)
             </Link>
 
+            {onOpenFAQ && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenFAQ();
+                }}
+                className="w-full text-left py-2.5 border-b border-gray-100 hover:text-[#0040E9] text-base flex items-center justify-between"
+              >
+                <span>FAQs</span>
+                <HelpCircle className="w-4 h-4 text-[#0040E9]" />
+              </button>
+            )}
+
             <Link
               to="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-[#0040E9]"
+              className="block py-2.5 hover:text-[#0040E9] text-sm text-gray-600"
             >
               Student Portal / Login
             </Link>
           </div>
 
-          <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenQuiz();
-              }}
-              className="w-full py-3 bg-gray-100 text-[#000F38] rounded-lg text-xs font-bold uppercase tracking-wider"
-            >
-              Take 60s Track Quiz
-            </button>
+          {/* Bottom Actions & Micro Buttons (Image 1 reference) */}
+          <div className="pt-6 border-t border-gray-200 mt-6 space-y-4">
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenQuiz();
+                }}
+                className="w-full py-3 bg-gray-100 text-[#000F38] rounded-xl text-xs font-bold uppercase tracking-wider"
+              >
+                Take 60s Track Quiz
+              </button>
 
-            <Link
-              to="/apply"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3.5 bg-[#0040E9] text-white rounded-lg text-xs font-bold uppercase tracking-wider text-center"
-            >
-              Apply Now
-            </Link>
+              <Link
+                to="/apply"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3.5 bg-[#0040E9] text-white rounded-xl text-xs font-bold uppercase tracking-wider text-center shadow-md"
+              >
+                Apply for Scholarship
+              </Link>
+            </div>
+
+            {/* Micro buttons row at bottom of mobile drawer */}
+            <div className="pt-3 flex flex-col items-center justify-center gap-2">
+              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                Official Channels & Support
+              </span>
+              <SocialLinks 
+                variant="circle" 
+                onOpenSupport={() => {
+                  setMobileMenuOpen(false);
+                  if (onOpenFAQ) onOpenFAQ();
+                }} 
+              />
+            </div>
           </div>
         </div>
       )}

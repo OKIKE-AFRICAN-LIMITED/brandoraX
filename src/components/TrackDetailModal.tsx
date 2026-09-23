@@ -22,14 +22,14 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
         <div className="p-6 sm:p-8 border-b border-brand-gray-200 flex items-start justify-between bg-brand-gray-50 rounded-t-2xl">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-blue bg-brand-blue-light px-3 py-1 rounded">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-blue bg-brand-blue-light px-3 py-1 rounded">
                 {program.category}
               </span>
-              <span className="text-xs font-mono text-brand-gray-500 bg-white px-2.5 py-1 rounded border border-brand-gray-200 flex items-center gap-1">
+              <span className="text-xs text-brand-gray-500 bg-white px-2.5 py-1 rounded border border-brand-gray-200 flex items-center gap-1 font-medium">
                 <Clock className="w-3.5 h-3.5" />
                 {program.duration}
               </span>
-              <span className="text-xs font-mono text-brand-gray-500 bg-white px-2.5 py-1 rounded border border-brand-gray-200 flex items-center gap-1">
+              <span className="text-xs text-brand-gray-500 bg-white px-2.5 py-1 rounded border border-brand-gray-200 flex items-center gap-1 font-medium">
                 <Calendar className="w-3.5 h-3.5" />
                 {program.nextCohortDate}
               </span>
@@ -56,7 +56,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
         <div className="p-6 sm:p-8 overflow-y-auto space-y-8">
           {/* Overview */}
           <div>
-            <h3 className="text-sm font-mono uppercase tracking-wider text-brand-blue font-bold mb-2">
+            <h3 className="text-sm uppercase tracking-wider text-brand-blue font-bold mb-2">
               Curriculum Overview
             </h3>
             <p className="text-brand-gray-700 text-sm sm:text-base leading-relaxed">
@@ -66,14 +66,14 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
 
           {/* Core Tools Mastered */}
           <div>
-            <h3 className="text-sm font-mono uppercase tracking-wider text-brand-blue font-bold mb-3">
+            <h3 className="text-sm uppercase tracking-wider text-brand-blue font-bold mb-3">
               Industry Toolchain Mastered
             </h3>
             <div className="flex flex-wrap gap-2">
               {program.tools.map((tool) => (
                 <span
                   key={tool}
-                  className="text-xs font-mono bg-brand-gray-100 text-brand-navy font-semibold px-3 py-1.5 rounded-md border border-brand-gray-200"
+                  className="text-xs bg-brand-gray-100 text-brand-navy font-semibold px-3 py-1.5 rounded-md border border-brand-gray-200"
                 >
                   {tool}
                 </span>
@@ -84,10 +84,10 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
           {/* Week-by-Week Syllabus Accordion / Timeline */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-mono uppercase tracking-wider text-brand-blue font-bold">
+              <h3 className="text-sm uppercase tracking-wider text-brand-blue font-bold">
                 Week-by-Week Learning Roadmap
               </h3>
-              <span className="text-xs font-mono text-brand-gray-500">
+              <span className="text-xs text-brand-gray-500 font-medium">
                 {program.commitment}
               </span>
             </div>
@@ -98,7 +98,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
                   key={idx}
                   className="bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-5 hover:border-brand-blue/60 transition-all"
                 >
-                  <div className="flex items-center justify-between text-xs font-mono text-brand-blue font-bold mb-1">
+                  <div className="flex items-center justify-between text-xs text-brand-blue font-bold mb-1">
                     <span>{mod.week}</span>
                     <span className="text-brand-gray-400">Sprint 0{idx + 1}</span>
                   </div>
@@ -108,7 +108,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
                   <p className="text-xs sm:text-sm text-brand-gray-600 leading-relaxed mb-3">
                     {mod.description}
                   </p>
-                  <div className="bg-white border border-brand-gray-200 rounded p-2.5 text-xs font-mono text-brand-navy flex items-center gap-2">
+                  <div className="bg-white border border-brand-gray-200 rounded p-2.5 text-xs text-brand-navy flex items-center gap-2">
                     <span className="text-brand-blue font-bold">Artifact Shipped:</span>
                     <span className="text-brand-gray-700">{mod.deliverable}</span>
                   </div>
@@ -119,7 +119,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
 
           {/* Capstone Project Showcase Box */}
           <div className="bg-brand-navy text-white rounded-xl p-6 border border-brand-navy-light shadow-md">
-            <div className="text-xs font-mono uppercase tracking-wider text-brand-amber font-bold mb-2">
+            <div className="text-xs uppercase tracking-wider text-brand-amber font-bold mb-2">
               Final Capstone Deliverable
             </div>
             <h4 className="text-xl font-bold mb-2">
@@ -132,7 +132,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
               {program.capstoneProject.technologies.map((t) => (
                 <span
                   key={t}
-                  className="text-xs font-mono bg-white/10 text-white px-2.5 py-1 rounded"
+                  className="text-xs bg-white/10 text-white px-2.5 py-1 rounded"
                 >
                   {t}
                 </span>
@@ -142,7 +142,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
 
           {/* Career Outcomes & Roles */}
           <div>
-            <h3 className="text-sm font-mono uppercase tracking-wider text-brand-blue font-bold mb-3">
+            <h3 className="text-sm uppercase tracking-wider text-brand-blue font-bold mb-3">
               Target Career Outcomes
             </h3>
             <div className="grid sm:grid-cols-2 gap-2.5">
@@ -161,13 +161,13 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
           {/* Tuition & Pricing Details */}
           <div className="bg-brand-blue-surface border border-brand-blue/20 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-mono uppercase tracking-wider text-brand-blue font-bold mb-1">
+              <div className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-1">
                 Transparent Tuition & Fees
               </div>
               <div className="text-2xl font-extrabold text-brand-navy">
                 {program.tuition.upfront}
               </div>
-              <div className="text-xs font-mono text-brand-gray-600 mt-1">
+              <div className="text-xs text-brand-gray-600 mt-1">
                 Installment Option: {program.tuition.installments}
               </div>
             </div>
@@ -179,7 +179,7 @@ export const TrackDetailModal: React.FC<TrackDetailModalProps> = ({
               }}
               className="bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-3.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2 whitespace-nowrap active:scale-95"
             >
-              Enroll in this Discipline
+              Enroll in this Programme
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

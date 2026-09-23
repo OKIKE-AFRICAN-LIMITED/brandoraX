@@ -122,7 +122,7 @@ export const ProofOfWorkLab: React.FC = () => {
   const CurrentIcon = current.icon;
 
   return (
-    <section className="py-24 px-4 sm:px-6 bg-[#000F38] text-white overflow-hidden relative">
+    <section className="py-24 px-4 sm:px-6 bg-[#000F38] text-white overflow-hidden relative w-full max-w-full">
       {/* Subtle Background Glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0040E9]/15 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#FEC958]/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -131,7 +131,7 @@ export const ProofOfWorkLab: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-3">
+            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#FEC958] font-bold mb-3">
               <Sparkles className="w-3.5 h-3.5 text-[#FEC958]" />
               What You Will Build
             </div>
@@ -143,7 +143,7 @@ export const ProofOfWorkLab: React.FC = () => {
             </p>
           </div>
 
-          {/* Discipline Switcher Tabs */}
+          {/* Programme Switcher Tabs */}
           <div className="flex flex-wrap gap-2">
             {projects.map((p, idx) => (
               <button
@@ -170,7 +170,7 @@ export const ProofOfWorkLab: React.FC = () => {
                 <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-[#FEC958]">
                   <CurrentIcon className="w-5 h-5" />
                 </div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#FEC958] font-semibold">
+                <span className="text-xs uppercase tracking-wider text-[#FEC958] font-semibold">
                   {current.discipline}
                 </span>
               </div>
@@ -185,7 +185,7 @@ export const ProofOfWorkLab: React.FC = () => {
 
               {/* Deliverables Checklist */}
               <div className="space-y-3 mb-8">
-                <div className="text-xs font-mono uppercase text-white/50 tracking-wider font-semibold">
+                <div className="text-xs uppercase text-white/50 tracking-wider font-semibold">
                   Tangible Artifacts You Graduate With:
                 </div>
                 {current.deliverables.map((item, i) => (
@@ -198,7 +198,7 @@ export const ProofOfWorkLab: React.FC = () => {
 
               {/* Tools Badges */}
               <div className="flex flex-wrap items-center gap-2 mb-8">
-                <span className="text-xs text-white/50 font-mono">Tools:</span>
+                <span className="text-xs text-white/50 font-medium">Tools:</span>
                 {current.tools.map((t) => (
                   <span
                     key={t}
@@ -229,10 +229,10 @@ export const ProofOfWorkLab: React.FC = () => {
                     <div className="w-3 h-3 rounded-full bg-yellow-400/80"></div>
                     <div className="w-3 h-3 rounded-full bg-green-400/80"></div>
                   </div>
-                  <span className="text-xs font-mono text-white/60">
+                  <span className="text-xs text-white/60 font-medium">
                     {current.mockupData.tag}
                   </span>
-                  <div className="bg-emerald-500/20 text-emerald-400 text-[11px] font-mono font-bold px-2 py-0.5 rounded">
+                  <div className="bg-emerald-500/20 text-emerald-400 text-[11px] font-bold px-2 py-0.5 rounded">
                     {current.mockupData.statValue}
                   </div>
                 </div>
@@ -251,7 +251,7 @@ export const ProofOfWorkLab: React.FC = () => {
                           key={idx}
                           className="bg-white/5 hover:bg-white/10 border border-white/10 p-3 rounded-md transition-colors"
                         >
-                          <div className="text-[11px] font-mono text-[#0040E9] font-bold mb-1">
+                          <div className="text-[11px] text-[#0040E9] font-bold mb-1">
                             0{idx + 1}
                           </div>
                           <div className="text-xs font-semibold text-white">

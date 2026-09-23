@@ -84,7 +84,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
     : programs.filter((p) => p.category === selectedCategory);
 
   return (
-    <div className="bg-white min-h-screen text-[#000F38]">
+    <div className="bg-white min-h-screen text-[#000F38] w-full max-w-full overflow-hidden">
       {/* 1. Hero Header from 02. ACADEMY */}
       <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10">
         {/* Background Image with Directional Fade */}
@@ -101,7 +101,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-3xl text-left flex flex-col items-start">
             <ScrollReveal direction="down" delay={50}>
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+              <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
                 BrandoraX Academy
               </div>
@@ -167,7 +167,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
       <section id="available-programmes" className="py-24 px-4 sm:px-6 max-w-7xl mx-auto scroll-mt-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
+            <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-2">
               Curriculum & Tracks
             </div>
             <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight">
@@ -222,7 +222,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
                 </p>
 
                 <div className="bg-[#F8FAFC] border border-gray-100 rounded-xl p-4 mb-8">
-                  <div className="text-xs font-mono uppercase text-[#0040E9] font-bold mb-2">
+                  <div className="text-xs uppercase text-[#0040E9] font-bold mb-2">
                     Focus:
                   </div>
                   <div className="text-xs text-gray-700 leading-relaxed font-medium">
@@ -233,7 +233,7 @@ export const AcademyPage: React.FC<AcademyPageProps> = ({ onOpenQuiz }) => {
 
               <div className="pt-6 border-t border-gray-100 flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-[10px] uppercase font-mono text-gray-400 font-medium">Tuition</div>
+                  <div className="text-[10px] uppercase text-gray-400 font-medium">Tuition</div>
                   <div className="text-sm font-bold text-[#000F38]">{prog.tuition}</div>
                 </div>
 

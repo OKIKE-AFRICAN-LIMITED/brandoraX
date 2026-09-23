@@ -6,7 +6,7 @@ import { ScrollReveal } from './ScrollReveal';
 
 export const ScholarshipBanner: React.FC = () => {
   return (
-    <section className="py-20 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200">
+    <section className="py-20 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <ScrollReveal direction="up" className="w-full">
           <div className="bg-gradient-to-br from-[#000F38] via-[#0A1B4B] to-[#0040E9] rounded-3xl p-8 sm:p-12 lg:p-14 text-white relative overflow-hidden shadow-2xl">

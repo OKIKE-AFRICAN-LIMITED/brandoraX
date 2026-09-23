@@ -33,7 +33,7 @@ export const CommunitySection: React.FC = () => {
   ];
 
   return (
-    <section id="community" className="py-16 sm:py-24 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200 scroll-mt-16">
+    <section id="community" className="py-16 sm:py-24 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200 scroll-mt-16 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* Main Community Hero Card with ScrollReveal */}
@@ -51,7 +51,7 @@ export const CommunitySection: React.FC = () => {
           <div className="relative z-10 p-6 sm:p-12 lg:p-16 max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-[#0040E9] text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-4 sm:mb-6 shadow-sm">
               <Users className="w-3.5 h-3.5 text-[#FEC958]" />
-              2,000+ Community Members
+              Join 2000+ Community Members
             </div>
 
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4 sm:mb-6 drop-shadow-sm">
@@ -82,7 +82,7 @@ export const CommunitySection: React.FC = () => {
 
             {/* Official Social Channels Strip */}
             <div className="pt-6 mt-8 border-t border-white/10">
-              <span className="block text-xs font-mono uppercase tracking-wider text-white/60 mb-3">
+              <span className="block text-xs uppercase tracking-wider text-white/60 mb-3 font-semibold">
                 Follow BrandoraX Across Official Channels:
               </span>
               <SocialLinks variant="pill" />
@@ -92,7 +92,7 @@ export const CommunitySection: React.FC = () => {
 
         {/* Sub-Section: What Happens in the Community? */}
         <ScrollReveal className="mb-12 text-center max-w-2xl mx-auto">
-          <div className="text-xs font-mono uppercase tracking-widest text-[#0040E9] font-bold mb-2">
+          <div className="text-xs uppercase tracking-widest text-[#0040E9] font-bold mb-2">
             Network & Ecosystem
           </div>
           <h3 className="text-2xl sm:text-4xl font-extrabold text-[#000F38]">

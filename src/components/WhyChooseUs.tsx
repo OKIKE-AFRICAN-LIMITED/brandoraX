@@ -24,14 +24,14 @@ export const WhyChooseUs: React.FC = () => {
     },
     {
       title: 'Real Opportunities',
-      desc: 'You go beyond training with access to internships, projects, jobs, and other opportunities through our talent pipeline.',
+      desc: 'You go beyond training with access to internships, projects, jobs, and other opportunities through our partner network.',
       image: ASSETS.whyChoose.realOpportunities,
       alt: 'Real job opportunities and career placement at BrandoraX'
     }
   ];
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-[#F8FAFC] border-b border-gray-200 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Section Header matching exact Brief */}
         <ScrollReveal className="max-w-3xl mb-12 sm:mb-16">

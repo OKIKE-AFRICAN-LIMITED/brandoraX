@@ -32,8 +32,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Lexend Deca', 'Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ['Plus Jakarta Sans', 'Lexend Deca', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Lexend Deca', 'Plus Jakarta Sans', 'sans-serif'],
+        mono: ['Plus Jakarta Sans', 'Lexend Deca', 'sans-serif'],
       },
       boxShadow: {
         'brand': '0 20px 40px -15px rgba(0, 15, 56, 0.08)',

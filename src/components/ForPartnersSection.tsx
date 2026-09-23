@@ -47,7 +47,7 @@ export const ForPartnersSection: React.FC = () => {
 
             {/* Right Content Column */}
             <ScrollReveal direction="right" delay={150} className="lg:col-span-7 order-1 lg:order-2">
-              <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
+              <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-3">
                 For Partners
               </div>
 
@@ -105,7 +105,7 @@ export const ForPartnersSection: React.FC = () => {
 
             {!submitted ? (
               <div>
-                <div className="text-xs font-mono uppercase tracking-wider text-[#0040E9] font-bold mb-2">
+                <div className="text-xs uppercase tracking-wider text-[#0040E9] font-bold mb-2">
                   For Partners
                 </div>
                 <h3 className="text-2xl font-bold text-[#000F38] mb-2">

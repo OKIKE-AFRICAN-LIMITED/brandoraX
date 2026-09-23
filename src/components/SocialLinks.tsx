@@ -1,10 +1,12 @@
 import React from 'react';
+import { HelpCircle, Mail, Headphones } from 'lucide-react';
 
 export const SOCIAL_LINKS = {
   facebook: 'https://www.facebook.com/share/19DE8BHoja/',
   x: 'https://x.com/Brandoraxafrica',
   linkedin: 'https://www.linkedin.com/company/brandoraxafrica/',
   telegram: 'https://t.me/brandorax_community',
+  support: 'mailto:academy@brandorax.africa',
 } as const;
 
 export const FacebookIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
@@ -37,62 +39,71 @@ export const TelegramIcon: React.FC<{ className?: string }> = ({ className = 'w-
 
 interface SocialLinksProps {
   className?: string;
-  variant?: 'footer' | 'pill' | 'minimal';
-  showLabels?: boolean;
+  variant?: 'circle' | 'pill' | 'footer';
+  onOpenSupport?: () => void;
 }
 
 export const SocialLinks: React.FC<SocialLinksProps> = ({
   className = '',
-  variant = 'footer',
-  showLabels = false,
+  variant = 'circle',
+  onOpenSupport,
 }) => {
   const items = [
     {
-      name: 'LinkedIn',
-      href: SOCIAL_LINKS.linkedin,
-      icon: LinkedinIcon,
-      hoverClass: 'hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30',
-      label: 'Brandorax Africa on LinkedIn',
+      name: 'Facebook',
+      href: SOCIAL_LINKS.facebook,
+      icon: FacebookIcon,
+      hoverClass: 'hover:text-[#1877F2] hover:bg-white',
+      label: 'BrandoraX on Facebook',
     },
     {
       name: 'X (Twitter)',
       href: SOCIAL_LINKS.x,
       icon: XIcon,
-      hoverClass: 'hover:text-white hover:bg-white/10 hover:border-white/30',
-      label: '@Brandoraxafrica on X',
+      hoverClass: 'hover:text-black hover:bg-white',
+      label: '@BrandoraXafrica on X',
     },
     {
-      name: 'Facebook',
-      href: SOCIAL_LINKS.facebook,
-      icon: FacebookIcon,
-      hoverClass: 'hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/30',
-      label: 'BrandoraX on Facebook',
+      name: 'LinkedIn',
+      href: SOCIAL_LINKS.linkedin,
+      icon: LinkedinIcon,
+      hoverClass: 'hover:text-[#0A66C2] hover:bg-white',
+      label: 'BrandoraX Africa on LinkedIn',
     },
     {
       name: 'Telegram',
       href: SOCIAL_LINKS.telegram,
       icon: TelegramIcon,
-      hoverClass: 'hover:text-[#229ED9] hover:bg-[#229ED9]/10 hover:border-[#229ED9]/30',
+      hoverClass: 'hover:text-[#229ED9] hover:bg-white',
       label: 'BrandoraX Community on Telegram',
+    },
+    {
+      name: 'Support',
+      href: SOCIAL_LINKS.support,
+      icon: Headphones,
+      hoverClass: 'hover:text-[#0040E9] hover:bg-white',
+      label: 'BrandoraX Support & Help',
+      onClick: onOpenSupport,
     },
   ];
 
   if (variant === 'pill') {
     return (
-      <div className={`flex flex-wrap items-center gap-2 sm:gap-3 ${className}`}>
+      <div className={`flex flex-wrap items-center gap-2 sm:gap-2.5 ${className}`}>
         {items.map((item) => {
           const Icon = item.icon;
           return (
             <a
               key={item.name}
               href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={item.onClick}
+              target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+              rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
               title={item.label}
               aria-label={item.label}
-              className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-medium transition-all duration-200 border bg-white/5 border-white/10 text-white/90 hover:scale-[1.03] ${item.hoverClass}`}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 bg-white/10 text-white hover:bg-white hover:text-[#000F38] shadow-sm hover:scale-105"
             >
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+              <Icon className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{item.name}</span>
             </a>
           );
@@ -101,19 +112,21 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({
     );
   }
 
+  // Circular micro buttons (as seen in Image 1 reference)
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
+    <div className={`flex items-center gap-2.5 sm:gap-3 ${className}`}>
       {items.map((item) => {
         const Icon = item.icon;
         return (
           <a
             key={item.name}
             href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={item.onClick}
+            target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+            rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
             title={item.label}
             aria-label={item.label}
-            className={`w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 bg-white/5 border border-white/10 transition-all duration-200 hover:scale-105 ${item.hoverClass}`}
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-white text-[#000F38] transition-all duration-200 hover:scale-110 hover:bg-[#FEC958] shadow-sm flex-shrink-0"
           >
             <Icon className="w-4 h-4" />
           </a>

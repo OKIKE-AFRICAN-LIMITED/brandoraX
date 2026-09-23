@@ -40,7 +40,7 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartner
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             {/* Left Content Column */}
             <ScrollReveal direction="left" className="lg:col-span-7">
-              <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
+              <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-3">
                 For Companies
               </div>
 
@@ -129,14 +129,14 @@ export const ForCompaniesSection: React.FC<ForCompaniesProps> = ({ onOpenPartner
 
             {!submitted ? (
               <div>
-                <div className="text-xs font-mono uppercase tracking-wider text-[#0040E9] font-bold mb-2">
+                <div className="text-xs uppercase tracking-wider text-[#0040E9] font-bold mb-2">
                   For Companies
                 </div>
                 <h3 className="text-2xl font-bold text-[#000F38] mb-2">
                   Hire Assessed Digital Talent
                 </h3>
                 <p className="text-xs text-gray-500 mb-6">
-                  Tell us what digital disciplines you need. We connect you directly with candidates who have been trained to do the work.
+                  Tell us what digital programmes you need. We connect you directly with candidates who have been trained to do the work.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4 text-xs font-medium text-gray-700">

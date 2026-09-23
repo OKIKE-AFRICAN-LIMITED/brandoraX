@@ -42,10 +42,10 @@ export const LearningJourney: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 bg-white border-b border-gray-200">
+    <section className="py-24 px-4 sm:px-6 bg-white border-b border-gray-200 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-3xl mb-16">
-          <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-3">
+          <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-3">
             The Student Learning Journey
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-4">
@@ -67,7 +67,7 @@ export const LearningJourney: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono font-bold text-[#0040E9] bg-blue-50 px-2.5 py-1 rounded">
+                    <span className="text-xs font-bold text-[#0040E9] bg-blue-50 px-2.5 py-1 rounded">
                       PHASE {p.step}
                     </span>
                     <div className="w-8 h-8 rounded-lg bg-white text-[#0040E9] flex items-center justify-center shadow-sm border border-gray-100">
@@ -87,7 +87,7 @@ export const LearningJourney: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-200/60 text-[11px] font-mono text-gray-400">
+                <div className="mt-6 pt-4 border-t border-gray-200/60 text-[11px] text-gray-400 font-medium">
                   Step {idx + 1} of 5
                 </div>
               </div>

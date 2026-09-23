@@ -1,8 +1,8 @@
 import React from 'react';
-import { Target, Compass, BookOpen, Users, Handshake, TrendingUp, ArrowRight, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { Target, Compass, BookOpen, Users, Handshake, TrendingUp, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ASSETS } from '../data/assets';
-import { SocialLinks, SOCIAL_LINKS } from '../components/SocialLinks';
+import { SOCIAL_LINKS } from '../components/SocialLinks';
 import { ScrollReveal } from '../components/ScrollReveal';
 
 export const AboutPage: React.FC = () => {
@@ -10,52 +10,53 @@ export const AboutPage: React.FC = () => {
     {
       step: '01',
       title: 'TRAIN',
-      desc: 'Build practical, in-demand digital skills through structured learning.'
+      desc: 'Build practical, in-demand digital skills through structured, hands-on learning.'
     },
     {
       step: '02',
       title: 'MENTOR',
-      desc: 'Learn from experienced practitioners who provide guidance, feedback and direction.'
+      desc: 'Learn from experienced practitioners who provide guidance, code reviews, and direction.'
     },
     {
       step: '03',
       title: 'BUILD',
-      desc: 'Work on practical projects that turn knowledge into experience.'
+      desc: 'Work on production-grade projects that turn theoretical knowledge into tangible proof of work.'
     },
     {
       step: '04',
       title: 'DEPLOY',
-      desc: 'Connect graduates with real opportunities, projects and employer pipelines.'
+      desc: 'Connect graduates with real career opportunities, live briefs, and employer pipelines.'
     }
   ];
 
+  // Partnerships ordered LAST as instructed
   const ecosystem = [
     {
       icon: BookOpen,
       title: 'Academy',
-      desc: 'Structured training designed to build practical digital skills and experience.'
+      desc: 'Structured, outcome-driven training designed to build verified digital capabilities and portfolio projects.'
     },
     {
       icon: Users,
       title: 'Community',
-      desc: 'A network where learners, creators and professionals connect, learn and grow together.'
-    },
-    {
-      icon: Handshake,
-      title: 'Partnerships',
-      desc: 'Working with organisations, businesses and institutions to create stronger pathways for talent development and opportunity.'
+      desc: 'A growing network where learners, creators, and professionals connect, share knowledge, and learn together.'
     },
     {
       icon: TrendingUp,
       title: 'Talent Development',
-      desc: 'Identifying and developing promising digital talent as they progress toward professional opportunities.'
+      desc: 'Identifying, assessing, and nurturing promising talent as they advance toward professional employment.'
+    },
+    {
+      icon: Handshake,
+      title: 'Partnerships',
+      desc: 'Collaborating with companies, startups, and institutions to create reliable pathways for talent absorption and youth empowerment.'
     }
   ];
 
   return (
-    <div className="bg-white min-h-screen text-[#000F38]">
-      {/* 1. Hero: ABOUT BRANDORAX matching exact brief */}
-      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10">
+    <div className="bg-white min-h-screen text-[#000F38] w-full overflow-hidden">
+      {/* 1. Hero: ABOUT BRANDORAX */}
+      <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10 w-full">
         {/* Background Image with Directional Fade */}
         <div className="absolute inset-0 z-0">
           <img
@@ -63,14 +64,14 @@ export const AboutPage: React.FC = () => {
             alt="BrandoraX Empowering Young African Professionals"
             className="w-full h-full object-cover object-[60%_center] sm:object-center lg:object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/80 via-[#000F38]/50 to-[#000F38]/95 md:bg-gradient-to-r md:from-[#000F38] md:via-[#000F38]/90 md:via-55% md:to-[#000F38]/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000F38]/85 via-[#000F38]/60 to-[#000F38]/95 md:bg-gradient-to-r md:from-[#000F38] md:via-[#000F38]/90 md:via-55% md:to-[#000F38]/30"></div>
           <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-[#000F38]/70 via-transparent to-[#000F38]/85"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-3xl text-left flex flex-col items-start">
             <ScrollReveal direction="down" delay={50}>
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-6 bg-white/10 px-4 py-1.5 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FEC958] mb-6 bg-white/10 px-4 py-2 rounded-full border border-white/15 backdrop-blur-md shadow-sm">
                 About BrandoraX
               </div>
             </ScrollReveal>
@@ -98,12 +99,13 @@ export const AboutPage: React.FC = () => {
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
 
+                {/* Partner with Us replacing Join the Talent Pipeline */}
                 <Link
-                  to="/apply"
+                  to="/talent-pipeline"
                   className="bg-white hover:bg-gray-100 text-[#000F38] px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center justify-center gap-2 text-center"
                 >
-                  <span>Join the Talent Pipeline</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#0040E9]" />
+                  <span>Partner with Us</span>
+                  <ArrowRight className="w-4 h-4 text-[#0040E9]" />
                 </Link>
               </div>
             </ScrollReveal>
@@ -111,58 +113,70 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. Manifesto: Why BrandoraX Exists */}
-      <section className="py-20 px-4 sm:px-6 max-w-5xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
-            Our Purpose
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#000F38] tracking-tight">
-            Why We Exist
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-[#F8FAFC] border border-gray-200 rounded-2xl p-6 sm:p-8">
-            <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#0040E9] mb-2">01 • The Reality</div>
-            <p className="text-sm sm:text-base text-[#000F38]/85 leading-relaxed">
-              Africa has no shortage of ambitious people willing to learn digital skills. But learning is only the beginning. The real challenge is becoming prepared for work and gaining access to opportunity.
-            </p>
+      {/* 2. Manifesto: Why We Exist (Enriched with Brand Colors & Updated Font Style from Image 5) */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-[#F4F7FF] border-b border-blue-100 w-full">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            {/* Updated font style on Purpose eyebrow */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 text-[#0040E9] text-xs font-bold uppercase tracking-wider mb-3">
+              01 · Our Purpose
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#000F38] tracking-tight">
+              Why We Exist
+            </h2>
           </div>
 
-          <div className="bg-[#F8FAFC] border border-gray-200 rounded-2xl p-6 sm:p-8">
-            <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#0040E9] mb-2">02 • The Gap</div>
-            <p className="text-sm sm:text-base text-[#000F38]/85 leading-relaxed">
-              At the same time, businesses need capable digital talent they can trust. The problem isn't a lack of potential. It's the gap between potential and opportunity.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* The Reality Card with updated font tag */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#000F38] text-[#FEC958] text-xs font-bold uppercase tracking-wider mb-3">
+                01 · The Reality
+              </div>
+              <p className="text-sm sm:text-base text-[#000F38]/85 leading-relaxed">
+                Africa has no shortage of ambitious people willing to learn digital skills. But learning is only the beginning. The real challenge is becoming prepared for work and gaining access to opportunity.
+              </p>
+            </div>
 
-          <div className="bg-[#F8FAFC] border border-gray-200 rounded-2xl p-6 sm:p-8 md:col-span-2">
-            <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#0040E9] mb-2">03 • The Solution</div>
-            <p className="text-base sm:text-lg text-[#000F38] font-medium leading-relaxed">
-              We exist to close that gap. BrandoraX is an employment-driven digital talent ecosystem built to help aspiring digital professionals develop practical skills, gain experience, build proof of work, and prepare for real-world opportunities.
-            </p>
-            <p className="text-sm text-gray-500 italic mt-3 pt-3 border-t border-gray-200">
-              We are building a pathway where learning doesn't end in a certificate — it moves toward capability, confidence and opportunity.
-            </p>
+            {/* The Gap Card with updated font tag */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#0040E9] text-white text-xs font-bold uppercase tracking-wider mb-3">
+                02 · The Gap
+              </div>
+              <p className="text-sm sm:text-base text-[#000F38]/85 leading-relaxed">
+                At the same time, businesses need capable digital talent they can trust. The problem isn't a lack of potential. It's the gap between potential and opportunity.
+              </p>
+            </div>
+
+            {/* The Solution Card with updated font tag */}
+            <div className="bg-white border-2 border-[#0040E9]/30 rounded-2xl p-6 sm:p-8 md:col-span-2 shadow-sm">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#FEC958] text-[#000F38] text-xs font-bold uppercase tracking-wider mb-3">
+                03 · The Solution
+              </div>
+              <p className="text-base sm:text-lg text-[#000F38] font-medium leading-relaxed">
+                We exist to close that gap. BrandoraX is an employment-driven digital talent ecosystem built to help aspiring digital professionals develop practical skills, gain experience, build proof of work, and prepare for real-world opportunities.
+              </p>
+              <p className="text-sm text-gray-500 italic mt-3 pt-3 border-t border-gray-100">
+                We are building a pathway where learning doesn't end in a certificate — it moves toward capability, confidence and opportunity.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. WHAT WE DO matching brief */}
-      <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto border-b border-gray-100">
-        <div className="max-w-4xl mx-auto bg-[#F8FAFC] border border-gray-200 rounded-3xl p-8 sm:p-14">
-          <div className="text-xs font-mono uppercase tracking-widest text-[#0040E9] font-bold mb-3">
+      {/* 3. WHAT WE DO (Rich Deep Navy Background to Eliminate Stark Whitespace) */}
+      <section className="py-20 px-4 sm:px-6 bg-[#000F38] text-white w-full border-b border-white/10">
+        <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-12 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider text-[#FEC958] mb-4 border border-white/15">
             What We Do
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
             We build people, not just skills.
           </h2>
-          <div className="space-y-4 text-base sm:text-lg text-[#000F38]/80 leading-relaxed">
+          <div className="space-y-4 text-base sm:text-lg text-white/85 leading-relaxed">
             <p>
-              Through the BrandoraX Academy, learners develop practical, in-demand digital skills through structured training, hands-on projects and mentorship.
+              Through the BrandoraX Academy, learners develop practical, in-demand digital skills through structured training, hands-on projects, and mentorship.
             </p>
-            <p className="font-semibold text-[#0040E9]">
+            <p className="font-bold text-[#FEC958]">
               But our work goes beyond the classroom.
             </p>
             <p>
@@ -172,16 +186,16 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. OUR VISION & OUR MISSION matching brief */}
-      <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto border-b border-gray-100">
+      {/* 4. VISION & MISSION (High Contrast Brand Dual Cards) */}
+      <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Vision Card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-8 sm:p-12 shadow-sm flex flex-col justify-between">
+          <div className="bg-[#F8FAFC] border border-gray-200 rounded-3xl p-8 sm:p-12 shadow-sm flex flex-col justify-between hover:border-blue-300 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0040E9] flex items-center justify-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-[#0040E9] flex items-center justify-center mb-6 shadow-sm">
                 <Compass className="w-6 h-6" />
               </div>
-              <div className="text-xs font-mono uppercase tracking-widest text-[#0040E9] font-bold mb-2">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#0040E9] mb-2">
                 Our Vision
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-[#000F38] mb-4">
@@ -194,12 +208,12 @@ export const AboutPage: React.FC = () => {
           </div>
 
           {/* Mission Card */}
-          <div className="bg-[#000F38] text-white rounded-2xl p-8 sm:p-12 shadow-xl flex flex-col justify-between">
+          <div className="bg-[#000F38] text-white rounded-3xl p-8 sm:p-12 shadow-xl flex flex-col justify-between border border-white/10">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-white/10 text-[#FEC958] flex items-center justify-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 text-[#FEC958] flex items-center justify-center mb-6 shadow-sm border border-white/15">
                 <Target className="w-6 h-6" />
               </div>
-              <div className="text-xs font-mono uppercase tracking-widest text-[#FEC958] font-bold mb-2">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#FEC958] mb-2">
                 Our Mission
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
@@ -213,62 +227,64 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. OUR APPROACH: TRAIN, MENTOR, BUILD, DEPLOY matching brief */}
-      <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto border-b border-gray-100">
-        <div className="max-w-3xl mb-16">
-          <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
-            Our Approach
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight">
-            From learning to deployment.
-          </h2>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {approaches.map((app) => (
-            <div
-              key={app.title}
-              className="bg-[#F8FAFC] border border-gray-200 rounded-2xl p-8 flex flex-col justify-between hover:shadow-lg transition-all"
-            >
-              <div>
-                <span className="text-xs font-mono font-bold text-[#0040E9] bg-blue-50 px-2.5 py-1 rounded mb-4 inline-block">
-                  STEP {app.step}
-                </span>
-                <h3 className="text-2xl font-extrabold text-[#000F38] mb-3">
-                  {app.title}
-                </h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {app.desc}
-                </p>
-              </div>
+      {/* 5. OUR APPROACH */}
+      <section className="py-20 px-4 sm:px-6 bg-[#F8FAFC] border-y border-gray-200 w-full">
+        <div className="max-w-7xl mx-auto">
+          <div className="max-w-3xl mb-14">
+            <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-2">
+              Our Approach
             </div>
-          ))}
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight">
+              From learning to deployment.
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {approaches.map((app) => (
+              <div
+                key={app.title}
+                className="bg-white border border-gray-200 rounded-2xl p-7 flex flex-col justify-between hover:shadow-lg transition-all"
+              >
+                <div>
+                  <span className="text-xs font-bold text-[#0040E9] bg-blue-50 px-3 py-1 rounded-md mb-4 inline-block">
+                    STEP {app.step}
+                  </span>
+                  <h3 className="text-2xl font-extrabold text-[#000F38] mb-3">
+                    {app.title}
+                  </h3>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {app.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 5. THE BRANDORAX ECOSYSTEM matching brief */}
-      <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto border-b border-gray-100">
-        <div className="max-w-3xl mb-16">
-          <div className="text-xs font-mono font-bold uppercase tracking-widest text-[#0040E9] mb-2">
+      {/* 6. THE BRANDORAX ECOSYSTEM (Partnerships comes LAST) */}
+      <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+        <div className="max-w-3xl mb-14">
+          <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-2">
             The BrandoraX Ecosystem
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-[#000F38] tracking-tight leading-tight mb-2">
-            One vision. Multiple pathways.
+            One vision. Four pathways.
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-16">
           {ecosystem.map((eco) => {
             const Icon = eco.icon;
             return (
               <div
                 key={eco.title}
-                className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-lg hover:border-[#0040E9]/50 transition-all"
+                className="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm hover:shadow-xl hover:border-[#0040E9] transition-all"
               >
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0040E9] flex items-center justify-center mb-6">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#000F38] mb-3">
+                <h3 className="text-xl font-bold text-[#000F38] mb-2">
                   {eco.title}
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
@@ -279,7 +295,7 @@ export const AboutPage: React.FC = () => {
           })}
         </div>
 
-        {/* 6. Closing Call to Action matching brief */}
+        {/* 7. Closing Call to Action (Official Channels box removed as requested) */}
         <div className="bg-[#000F38] text-white rounded-3xl p-8 sm:p-14 text-center max-w-4xl mx-auto shadow-2xl">
           <h3 className="text-2xl sm:text-4xl font-extrabold mb-4">
             Join our growing community of 2,000+ community members.
@@ -291,21 +307,13 @@ export const AboutPage: React.FC = () => {
             href={SOCIAL_LINKS.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
+            className="bg-[#0040E9] hover:bg-[#0035C2] text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
           >
-            Join Our Community
+            <span>Join Our Community</span>
             <ArrowRight className="w-4 h-4" />
           </a>
-
-          <div className="pt-8 mt-8 border-t border-white/10 flex flex-col items-center">
-            <span className="text-xs font-mono uppercase tracking-wider text-white/60 mb-3">
-              Follow BrandoraX Official Channels:
-            </span>
-            <SocialLinks variant="pill" className="justify-center" />
-          </div>
         </div>
       </section>
     </div>
   );
 };
-
