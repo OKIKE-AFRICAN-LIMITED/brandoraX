@@ -47,8 +47,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         supabase.from('enrollments').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle()
       ]);
 
+      const userEmail = (currentUser?.email || p?.email || '').toLowerCase();
+      let resolvedRole: 'student' | 'admin' = (p?.role as 'student' | 'admin') || 'student';
+
+      if (resolvedRole !== 'admin') {
+        if (userEmail === 'okikeenterprises@gmail.com') {
+          resolvedRole = 'admin';
+        } else {
+          const { data: adminRow } = await supabase
+            .from('admins')
+            .select('email')
+            .eq('email', userEmail)
+            .maybeSingle();
+          if (adminRow) resolvedRole = 'admin';
+        }
+      }
+
       if (p) {
-        setProfile(p as DbProfile);
+        setProfile({ ...(p as DbProfile), role: resolvedRole });
       } else {
         // Fallback profile from user auth metadata so the app doesn't stall
         const email = currentUser?.email || '';
@@ -59,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email,
           phone: meta.phone || null,
           country: meta.country || 'Nigeria',
-          role: (email === 'okikeenterprises@gmail.com' ? 'admin' : 'student') as 'student' | 'admin',
+          role: resolvedRole,
           created_at: new Date().toISOString()
         };
 
@@ -78,13 +94,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (err) {
       console.warn('Error loading user data:', err);
       if (currentUser) {
+        const email = currentUser.email || '';
         setProfile({
           id: userId,
           full_name: currentUser.email?.split('@')[0] || 'Learner',
-          email: currentUser.email || '',
+          email,
           phone: null,
           country: 'Nigeria',
-          role: (currentUser.email === 'okikeenterprises@gmail.com' ? 'admin' : 'student') as 'student' | 'admin',
+          role: (email.toLowerCase() === 'okikeenterprises@gmail.com' ? 'admin' : 'student') as 'student' | 'admin',
           created_at: new Date().toISOString()
         });
       }
@@ -135,6 +152,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
     if (error) return { error: error.message };
+
+    // Fallback: If user was returned, also directly ensure profile and enrollment are inserted
+    if (data.user) {
+      try {
+        await Promise.allSettled([
+          supabase.from('profiles').upsert({
+            id: data.user.id,
+            full_name: input.fullName,
+            email: input.email,
+            phone: input.phone,
+            country: input.country,
+            role: 'student'
+          }),
+          supabase.from('enrollments').upsert({
+            user_id: data.user.id,
+            track_id: input.trackId,
+            payment_plan: input.paymentPlan,
+            cohort: 'Cohort 1 (Alpha)',
+            payment_status: 'pending',
+            amount_paid: 0,
+            telegram_joined: false,
+            status: 'active'
+          })
+        ]);
+      } catch (insertErr) {
+        console.warn('Direct enrollment insert notice:', insertErr);
+      }
+    }
+
     return { needsConfirmation: !data.session };
   };
 

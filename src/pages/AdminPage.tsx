@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   LayoutDashboard, Users, Wallet, Video, FileCheck2, Megaphone, Search, Trash2,
-  GraduationCap, Clock, TrendingUp, ExternalLink, Landmark, ChevronDown
+  GraduationCap, Clock, TrendingUp, ExternalLink, Landmark, ChevronDown, RefreshCw,
+  ShieldCheck, UserPlus, UserMinus
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -12,10 +13,10 @@ import {
   inputCls, btnPrimary, btnGhost, fmtDate, fmtDateTime, fmtMoney
 } from '../components/dashboard/ui';
 import type {
-  DbAnnouncement, DbEnrollment, DbPaymentSettings, DbProfile, DbSession, DbSubmission, PaymentStatus
+  DbAnnouncement, DbEnrollment, DbPaymentSettings, DbProfile, DbSession, DbSubmission, PaymentStatus, DbAdmin
 } from '../types/db';
 
-type Tab = 'overview' | 'students' | 'payments' | 'sessions' | 'submissions' | 'announcements';
+type Tab = 'overview' | 'students' | 'payments' | 'sessions' | 'submissions' | 'announcements' | 'admins';
 
 const trackName = (id: string | null) => (id ? PROGRAMS.find((p) => p.id === id)?.title || id : 'All tracks');
 
@@ -23,6 +24,7 @@ export const AdminPage: React.FC = () => {
   const { profile, signOut } = useAuth();
   const [tab, setTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<DbProfile[]>([]);
   const [enrollments, setEnrollments] = useState<DbEnrollment[]>([]);
@@ -30,16 +32,19 @@ export const AdminPage: React.FC = () => {
   const [sessions, setSessions] = useState<DbSession[]>([]);
   const [announcements, setAnnouncements] = useState<DbAnnouncement[]>([]);
   const [settings, setSettings] = useState<DbPaymentSettings | null>(null);
+  const [admins, setAdmins] = useState<DbAdmin[]>([]);
 
   const load = useCallback(async () => {
     if (!supabase) return;
-    const [p, e, s, se, a, ps] = await Promise.all([
+    setRefreshing(true);
+    const [p, e, s, se, a, ps, adm] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('enrollments').select('*').order('created_at', { ascending: false }),
       supabase.from('submissions').select('*').order('created_at', { ascending: false }),
       supabase.from('sessions').select('*').order('starts_at', { ascending: true }),
       supabase.from('announcements').select('*').order('created_at', { ascending: false }),
-      supabase.from('payment_settings').select('*').eq('id', 1).maybeSingle()
+      supabase.from('payment_settings').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('admins').select('*').order('created_at', { ascending: false })
     ]);
     const firstErr = [p, e, s, se, a, ps].find((r) => r.error)?.error;
     if (firstErr) setError(firstErr.message);
@@ -49,13 +54,45 @@ export const AdminPage: React.FC = () => {
     setSessions((se.data as DbSession[]) || []);
     setAnnouncements((a.data as DbAnnouncement[]) || []);
     setSettings((ps.data as DbPaymentSettings) || null);
+    setAdmins((adm.data as DbAdmin[]) || []);
     setLoading(false);
+    setRefreshing(false);
   }, []);
 
   useEffect(() => { load(); }, [load]);
 
   const byId = useMemo(() => new Map(profiles.map((p) => [p.id, p])), [profiles]);
-  const students = useMemo(() => profiles.filter((p) => p.role === 'student'), [profiles]);
+
+  // Robust student resolution: shows all non-admin profiles AND any enrolled users
+  const students = useMemo(() => {
+    const adminEmails = new Set(admins.map((a) => a.email.toLowerCase()));
+    adminEmails.add('okikeenterprises@gmail.com');
+
+    const list = profiles.filter((p) => {
+      if (p.role === 'admin') return false;
+      if (adminEmails.has((p.email || '').toLowerCase())) return false;
+      return true;
+    });
+
+    const existingIds = new Set(profiles.map((p) => p.id));
+    enrollments.forEach((e) => {
+      if (!existingIds.has(e.user_id)) {
+        list.push({
+          id: e.user_id,
+          full_name: 'Registered Student',
+          email: 'Student (Auto-syncing record)',
+          phone: null,
+          country: 'Nigeria',
+          role: 'student',
+          created_at: e.created_at
+        });
+        existingIds.add(e.user_id);
+      }
+    });
+
+    return list;
+  }, [profiles, enrollments, admins]);
+
   const enrollOf = useMemo(() => new Map(enrollments.map((e) => [e.user_id, e])), [enrollments]);
 
   const awaiting = enrollments.filter((e) => e.payment_status === 'awaiting_confirmation');
@@ -64,11 +101,12 @@ export const AdminPage: React.FC = () => {
 
   const nav: NavItem[] = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'students', label: 'Students', icon: Users },
+    { id: 'students', label: 'Students', icon: Users, badge: students.length },
     { id: 'payments', label: 'Payments', icon: Wallet, badge: awaiting.length },
     { id: 'sessions', label: 'Live Sessions', icon: Video },
     { id: 'submissions', label: 'Submissions', icon: FileCheck2, badge: toReview.length },
-    { id: 'announcements', label: 'Announcements', icon: Megaphone }
+    { id: 'announcements', label: 'Announcements', icon: Megaphone },
+    { id: 'admins', label: 'Team & Admins', icon: ShieldCheck, badge: admins.length || 1 }
   ];
 
   if (!profile) return null;
@@ -94,7 +132,7 @@ export const AdminPage: React.FC = () => {
             <Overview
               students={students} enrollments={enrollments} awaiting={awaiting.length}
               toReview={toReview.length} revenue={revenue} sessions={sessions}
-              byId={byId} go={(t) => setTab(t)}
+              byId={byId} go={(t) => setTab(t)} onRefresh={load} refreshing={refreshing}
             />
           )}
           {tab === 'students' && <Students students={students} enrollOf={enrollOf} onChanged={load} />}
@@ -102,6 +140,7 @@ export const AdminPage: React.FC = () => {
           {tab === 'sessions' && <Sessions sessions={sessions} onChanged={load} />}
           {tab === 'submissions' && <Submissions submissions={submissions} byId={byId} onChanged={load} />}
           {tab === 'announcements' && <Announcements items={announcements} onChanged={load} />}
+          {tab === 'admins' && <AdminsManager admins={admins} profiles={profiles} onChanged={load} />}
         </>
       )}
     </DashboardShell>
@@ -113,7 +152,8 @@ export const AdminPage: React.FC = () => {
 const Overview: React.FC<{
   students: DbProfile[]; enrollments: DbEnrollment[]; awaiting: number; toReview: number;
   revenue: number; sessions: DbSession[]; byId: Map<string, DbProfile>; go: (t: Tab) => void;
-}> = ({ students, enrollments, awaiting, toReview, revenue, sessions, byId, go }) => {
+  onRefresh: () => void; refreshing: boolean;
+}> = ({ students, enrollments, awaiting, toReview, revenue, sessions, byId, go, onRefresh, refreshing }) => {
   const perTrack = PROGRAMS.map((p) => ({ title: p.title, n: enrollments.filter((e) => e.track_id === p.id).length }));
   const max = Math.max(1, ...perTrack.map((t) => t.n));
   const nextSession = sessions.find((s) => new Date(s.starts_at).getTime() >= Date.now());
@@ -123,10 +163,20 @@ const Overview: React.FC<{
     <>
       <div className="rounded-2xl bg-brand-navy text-white p-6 sm:p-8 border border-brand-navy-light shadow-brand relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-brand-blue/30 blur-3xl pointer-events-none" />
-        <div className="relative">
-          <div className="text-[11px] uppercase tracking-widest text-brand-amber font-bold mb-1">Admin Console</div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold">Cohort overview</h1>
-          <p className="text-sm text-white/70 mt-1">Everything happening across BrandoraX programmes, at a glance.</p>
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="text-[11px] uppercase tracking-widest text-brand-amber font-bold mb-1">Admin Console</div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold">Cohort overview</h1>
+            <p className="text-sm text-white/70 mt-1">Everything happening across BrandoraX programmes, at a glance.</p>
+          </div>
+          <button
+            onClick={onRefresh}
+            disabled={refreshing}
+            className="self-start sm:self-auto inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            <span>{refreshing ? 'Syncing...' : 'Sync Live Data'}</span>
+          </button>
         </div>
       </div>
 
@@ -288,6 +338,20 @@ const StudentEditor: React.FC<{ profile: DbProfile; enrollment: DbEnrollment; on
     onChanged();
   };
 
+  const promoteToAdmin = async () => {
+    if (!supabase || !profile.email) return;
+    if (!window.confirm(`Grant Administrator privileges to ${profile.full_name || profile.email}?\n\nThey will gain access to the Admin Console, student directory, and payment verification.`)) return;
+    setBusy(true);
+    try {
+      await supabase.rpc('promote_user_to_admin', { target_email: profile.email.toLowerCase().trim() });
+    } catch {
+      await supabase.from('admins').upsert({ email: profile.email.toLowerCase().trim(), role: 'admin' });
+      await supabase.from('profiles').update({ role: 'admin' }).eq('id', profile.id);
+    }
+    setBusy(false);
+    onChanged();
+  };
+
   return (
     <div className="bg-brand-gray-50 border-t border-brand-gray-200 px-4 py-5 space-y-4">
       <div className="text-xs text-brand-gray-600 flex flex-wrap gap-x-6 gap-y-1">
@@ -317,7 +381,20 @@ const StudentEditor: React.FC<{ profile: DbProfile; enrollment: DbEnrollment; on
           <input value={cohort} onChange={(e) => setCohort(e.target.value)} className={inputCls} />
         </Field>
       </div>
-      <button disabled={busy} onClick={save} className={btnPrimary}>{busy ? 'Saving…' : 'Save changes'}</button>
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-brand-gray-200/60">
+        <button disabled={busy} onClick={save} className={btnPrimary}>{busy ? 'Saving…' : 'Save changes'}</button>
+        {profile.email && !profile.email.includes('Auto-syncing') && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={promoteToAdmin}
+            className="text-xs font-semibold text-brand-navy hover:text-brand-blue bg-white border border-brand-gray-300 hover:border-brand-blue px-3.5 py-2 rounded-xl transition-colors inline-flex items-center gap-1.5 shadow-sm"
+          >
+            <ShieldCheck className="w-4 h-4 text-brand-blue" />
+            <span>Make Administrator</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 };
@@ -572,6 +649,181 @@ const Announcements: React.FC<{ items: DbAnnouncement[]; onChanged: () => void }
             ))}
           </ul>
         )}
+      </Card>
+    </>
+  );
+};
+
+/* ---------------------------- Admins & Team --------------------------- */
+
+const AdminsManager: React.FC<{
+  admins: DbAdmin[];
+  profiles: DbProfile[];
+  onChanged: () => void;
+}> = ({ admins, profiles, onChanged }) => {
+  const [newEmail, setNewEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  // Consolidate admin accounts
+  const adminMap = useMemo(() => {
+    const map = new Map<string, { email: string; name?: string; role: string; isRoot: boolean }>();
+
+    // Root admin guarantee
+    map.set('okikeenterprises@gmail.com', {
+      email: 'okikeenterprises@gmail.com',
+      role: 'Superadmin',
+      isRoot: true
+    });
+
+    admins.forEach((a) => {
+      const em = a.email.toLowerCase().trim();
+      const isRoot = em === 'okikeenterprises@gmail.com';
+      map.set(em, {
+        email: em,
+        role: isRoot ? 'Superadmin' : 'Administrator',
+        isRoot
+      });
+    });
+
+    profiles.filter((p) => p.role === 'admin').forEach((p) => {
+      const em = p.email.toLowerCase().trim();
+      const existing = map.get(em);
+      map.set(em, {
+        email: em,
+        name: p.full_name,
+        role: existing?.isRoot ? 'Superadmin' : 'Administrator',
+        isRoot: Boolean(existing?.isRoot)
+      });
+    });
+
+    return Array.from(map.values());
+  }, [admins, profiles]);
+
+  const handleAddAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !newEmail.trim()) return;
+    const target = newEmail.toLowerCase().trim();
+    setBusy(true);
+    setStatusMsg(null);
+
+    try {
+      const { error: rpcErr } = await supabase.rpc('promote_user_to_admin', { target_email: target });
+      if (rpcErr) {
+        // Fallback direct table modifications
+        await supabase.from('admins').upsert({ email: target, role: 'admin' });
+        await supabase.from('profiles').update({ role: 'admin' }).eq('email', target);
+      }
+      setNewEmail('');
+      setStatusMsg({ type: 'ok', text: `Successfully granted Administrator privileges to ${target}.` });
+      onChanged();
+    } catch (err: any) {
+      setStatusMsg({ type: 'err', text: err?.message || 'Failed to add administrator.' });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleRevokeAdmin = async (targetEmail: string) => {
+    if (!supabase) return;
+    if (targetEmail === 'okikeenterprises@gmail.com') return;
+    if (!window.confirm(`Revoke Administrator privileges from ${targetEmail}?\n\nThey will be reverted to a standard Student role.`)) return;
+
+    setBusy(true);
+    setStatusMsg(null);
+
+    try {
+      const { error: rpcErr } = await supabase.rpc('demote_user_to_student', { target_email: targetEmail });
+      if (rpcErr) {
+        await supabase.from('admins').delete().eq('email', targetEmail);
+        await supabase.from('profiles').update({ role: 'student' }).eq('email', targetEmail);
+      }
+      setStatusMsg({ type: 'ok', text: `Administrator access revoked from ${targetEmail}.` });
+      onChanged();
+    } catch (err: any) {
+      setStatusMsg({ type: 'err', text: err?.message || 'Failed to revoke administrator.' });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <Card subtitle="Privileges & Roles" title="Add New Administrator">
+        <p className="text-xs text-brand-gray-600 mb-4 leading-relaxed">
+          Administrators can access this Admin Console, view and search all registered students, verify tuition payments, host live sessions, and review sprint submissions.
+        </p>
+        <form onSubmit={handleAddAdmin} className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <input
+              type="email"
+              required
+              placeholder="e.g. colleague@brandorax.africa"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              className={inputCls}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={busy || !newEmail.trim()}
+            className={`${btnPrimary} whitespace-nowrap inline-flex items-center justify-center gap-2`}
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>{busy ? 'Adding…' : 'Grant Admin Privileges'}</span>
+          </button>
+        </form>
+
+        {statusMsg && (
+          <div className={`mt-4 text-xs font-semibold p-3 rounded-xl border ${
+            statusMsg.type === 'ok' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-red-50 text-red-800 border-red-200'
+          }`}>
+            {statusMsg.text}
+          </div>
+        )}
+      </Card>
+
+      <Card subtitle="Access Control" title={`Active Administrators (${adminMap.length})`}>
+        <div className="border border-brand-gray-200 rounded-xl overflow-hidden divide-y divide-brand-gray-100">
+          <div className="hidden sm:grid grid-cols-[2fr_1.5fr_1fr] gap-4 px-4 py-2.5 bg-brand-gray-50 text-[11px] uppercase tracking-wider font-bold text-brand-gray-500">
+            <div>Administrator</div>
+            <div>Access Level</div>
+            <div className="text-right">Action</div>
+          </div>
+          {adminMap.map((a) => (
+            <div key={a.email} className="px-4 py-3.5 flex flex-col sm:grid sm:grid-cols-[2fr_1.5fr_1fr] gap-2 sm:gap-4 sm:items-center">
+              <div className="min-w-0">
+                <div className="text-sm font-bold text-brand-navy truncate">
+                  {a.name || a.email.split('@')[0]}
+                </div>
+                <div className="text-xs text-brand-gray-500 truncate">{a.email}</div>
+              </div>
+              <div>
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                  a.isRoot ? 'bg-brand-navy text-brand-amber border border-brand-amber/30' : 'bg-blue-50 text-brand-blue border border-brand-blue/20'
+                }`}>
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>{a.role}</span>
+                </span>
+              </div>
+              <div className="sm:text-right">
+                {a.isRoot ? (
+                  <span className="text-[11px] font-semibold text-brand-gray-400 italic">Protected Root</span>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => handleRevokeAdmin(a.email)}
+                    className="text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1"
+                  >
+                    <UserMinus className="w-3.5 h-3.5" />
+                    <span>Revoke</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </Card>
     </>
   );

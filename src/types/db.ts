@@ -63,3 +63,9 @@ export interface DbPaymentSettings {
   account_number: string | null;
   instructions: string | null;
 }
+
+export interface DbAdmin {
+  email: string;
+  role: string;
+  created_at: string;
+}
