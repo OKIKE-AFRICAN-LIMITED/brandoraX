@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -22,9 +22,32 @@ import { TrackMatcherModal } from './components/TrackMatcherModal';
 
 export const AppContent: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
   const openFAQ = () => navigate('/faq');
 
+  const isDashboardRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
+
+  // Dedicated App Dashboard Mode: No public Navbar, no public Footer, full-viewport application container
+  if (isDashboardRoute) {
+    return (
+      <div className="h-screen w-screen overflow-hidden bg-brand-gray-50 text-brand-navy">
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/dashboard"
+            element={<RequireAuth><DashboardPage /></RequireAuth>}
+          />
+          <Route
+            path="/admin"
+            element={<RequireAuth admin><AdminPage /></RequireAuth>}
+          />
+        </Routes>
+      </div>
+    );
+  }
+
+  // Public Marketing Website Mode with Navbar, Footer, and Modals
   return (
     <div className="min-h-screen flex flex-col bg-brand-gray-50 text-brand-navy overflow-x-hidden w-full max-w-full">
       <ScrollToTop />
@@ -68,14 +91,6 @@ export const AppContent: React.FC = () => {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route
-            path="/dashboard"
-            element={<RequireAuth><DashboardPage /></RequireAuth>}
-          />
-          <Route
-            path="/admin"
-            element={<RequireAuth admin><AdminPage /></RequireAuth>}
-          />
-          <Route
             path="/faq"
             element={<FAQPage onOpenQuiz={() => setIsQuizOpen(true)} />}
           />
@@ -99,7 +114,6 @@ export const AppContent: React.FC = () => {
           navigate(`/apply?track=${id}`);
         }}
       />
-
     </div>
   );
 };

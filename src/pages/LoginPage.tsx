@@ -14,8 +14,9 @@ export const LoginPage: React.FC = () => {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (user && profile) {
-      navigate(location.state?.from || (profile.role === 'admin' ? '/admin' : '/dashboard'), { replace: true });
+    if (user) {
+      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : '/dashboard');
+      navigate(target, { replace: true });
     }
   }, [user, profile, navigate, location.state]);
 
@@ -24,8 +25,13 @@ export const LoginPage: React.FC = () => {
     setBusy(true);
     setError(null);
     const err = await signIn(email.trim(), password);
-    if (err) setError(err);
-    setBusy(false);
+    if (err) {
+      setError(err);
+      setBusy(false);
+    } else {
+      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : '/dashboard');
+      navigate(target, { replace: true });
+    }
   };
 
   return (

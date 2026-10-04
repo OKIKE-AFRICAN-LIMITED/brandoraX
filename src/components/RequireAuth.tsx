@@ -8,7 +8,7 @@ export const RequireAuth: React.FC<{ admin?: boolean; children: React.ReactEleme
   const { loading, user, profile, isAdmin } = useAuth();
   const location = useLocation();
 
-  if (loading || (user && !profile)) return <Spinner label="Loading your portal…" />;
+  if (loading) return <Spinner label="Loading your portal…" />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   if (admin && !isAdmin) return <Navigate to="/dashboard" replace />;
   // Admins land on their console, not the student view

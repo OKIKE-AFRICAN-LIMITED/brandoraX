@@ -35,18 +35,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [enrollment, setEnrollment] = useState<DbEnrollment | null>(null);
   const [loading, setLoading] = useState<boolean>(isSupabaseConfigured);
 
-  const loadUserData = useCallback(async (userId: string | undefined) => {
+  const loadUserData = useCallback(async (userId: string | undefined, currentUser?: User | null) => {
     if (!supabase || !userId) {
       setProfile(null);
       setEnrollment(null);
       return;
     }
-    const [{ data: p }, { data: e }] = await Promise.all([
-      supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
-      supabase.from('enrollments').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle()
-    ]);
-    setProfile((p as DbProfile) ?? null);
-    setEnrollment((e as DbEnrollment) ?? null);
+    try {
+      const [{ data: p, error: pErr }, { data: e }] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        supabase.from('enrollments').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(1).maybeSingle()
+      ]);
+
+      if (p) {
+        setProfile(p as DbProfile);
+      } else {
+        // Fallback profile from user auth metadata so the app doesn't stall
+        const email = currentUser?.email || '';
+        const meta = currentUser?.user_metadata || {};
+        const fallback: DbProfile = {
+          id: userId,
+          full_name: meta.full_name || email.split('@')[0] || 'Learner',
+          email,
+          phone: meta.phone || null,
+          country: meta.country || 'Nigeria',
+          role: (email === 'okikeenterprises@gmail.com' ? 'admin' : 'student') as 'student' | 'admin',
+          created_at: new Date().toISOString()
+        };
+
+        // If the table exists, self-heal by upserting
+        if (!pErr) {
+          try {
+            await supabase.from('profiles').upsert(fallback);
+          } catch {
+            // silent catch
+          }
+        }
+        setProfile(fallback);
+      }
+
+      setEnrollment((e as DbEnrollment) ?? null);
+    } catch (err) {
+      console.warn('Error loading user data:', err);
+      if (currentUser) {
+        setProfile({
+          id: userId,
+          full_name: currentUser.email?.split('@')[0] || 'Learner',
+          email: currentUser.email || '',
+          phone: null,
+          country: 'Nigeria',
+          role: (currentUser.email === 'okikeenterprises@gmail.com' ? 'admin' : 'student') as 'student' | 'admin',
+          created_at: new Date().toISOString()
+        });
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -56,14 +98,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
       setSession(data.session);
-      await loadUserData(data.session?.user.id);
+      await loadUserData(data.session?.user.id, data.session?.user);
       if (active) setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
       setSession(next);
-      // Defer to avoid deadlocking inside the auth callback
-      setTimeout(() => { loadUserData(next?.user.id); }, 0);
+      setTimeout(() => { loadUserData(next?.user.id, next?.user); }, 0);
     });
 
     return () => {
@@ -103,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setEnrollment(null);
   };
 
-  const refresh = async () => loadUserData(session?.user.id);
+  const refresh = async () => loadUserData(session?.user.id, session?.user);
 
   return (
     <AuthContext.Provider

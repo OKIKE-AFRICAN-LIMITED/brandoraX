@@ -57,13 +57,28 @@ export const DashboardPage: React.FC = () => {
 
   if (!enrollment || !track) {
     return (
-      <div className="bg-brand-gray-50 min-h-[60vh] flex items-center justify-center px-4">
-        <div className="bg-white border border-brand-gray-200 rounded-2xl p-8 max-w-md text-center shadow-sm">
-          <h1 className="text-xl font-extrabold text-brand-navy mb-2">No enrolment found</h1>
-          <p className="text-sm text-brand-gray-500 mb-5">Your account isn't linked to a programme yet.</p>
-          <Link to="/apply" className={btnPrimary}>Choose a programme</Link>
+      <DashboardShell
+        portalLabel="Student Portal"
+        userName={profile.full_name || 'Student'}
+        userSub="Enrolment Pending"
+        nav={NAV}
+        active="overview"
+        onChange={() => {}}
+        onSignOut={signOut}
+      >
+        <div className="bg-white border border-brand-gray-200 rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto text-center shadow-sm my-10">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-brand-blue flex items-center justify-center mx-auto mb-4 border border-blue-100">
+            <Layers className="w-8 h-8" />
+          </div>
+          <h1 className="text-2xl font-extrabold text-brand-navy mb-2">Welcome to BrandoraX Portal</h1>
+          <p className="text-sm text-brand-gray-600 mb-6 max-w-md mx-auto">
+            You don't have an active programme enrolment yet. Select your preferred digital skills track to activate your curriculum, live Google Meet sessions, and project sprints.
+          </p>
+          <Link to="/apply" className={btnPrimary}>
+            Select Programme &amp; Enrol
+          </Link>
         </div>
-      </div>
+      </DashboardShell>
     );
   }
 
