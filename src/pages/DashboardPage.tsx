@@ -1,235 +1,414 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Clock, Video, Send, BookOpen, Download, AlertCircle, Calendar, GraduationCap, ChevronRight, User, ArrowRight } from 'lucide-react';
-import { StudentProfile } from '../types';
+import {
+  LayoutDashboard, Layers, Video, Wallet, CheckCircle2, Circle, Send, BookOpen,
+  Megaphone, CalendarClock, ExternalLink, Landmark, Target, FileCheck2, Clock
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import { PROGRAMS } from '../data/programsData';
+import { DashboardShell, NavItem } from '../components/dashboard/DashboardShell';
+import {
+  Card, StatCard, PaymentBadge, SubmissionBadge, EmptyState, ProgressBar, Spinner,
+  inputCls, btnPrimary, btnGhost, fmtDate, fmtDateTime, fmtMoney
+} from '../components/dashboard/ui';
+import type { DbAnnouncement, DbPaymentSettings, DbSession, DbSubmission } from '../types/db';
 
-interface DashboardPageProps {
-  student: StudentProfile | null;
-}
+type Tab = 'overview' | 'sprints' | 'sessions' | 'payment';
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({ student }) => {
-  const [telegramJoined, setTelegramJoined] = useState(false);
+const NAV: NavItem[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { id: 'sprints', label: 'Sprints & Projects', icon: Layers },
+  { id: 'sessions', label: 'Live Sessions', icon: Video },
+  { id: 'payment', label: 'Tuition & Payment', icon: Wallet }
+];
 
-  // Fallback demo student if accessed without enrolling
-  const activeStudent: StudentProfile = student || {
-    fullName: 'Oluwaseun Adeleke',
-    email: 'seun.adeleke@example.com',
-    phone: '+234 812 345 6789',
-    country: 'Nigeria',
-    trackId: 'web-dev',
-    cohort: 'Cohort 1 (Alpha)',
-    paymentPlan: 'upfront',
-    isEnrolled: true,
-    enrollmentDate: new Date().toISOString()
+export const DashboardPage: React.FC = () => {
+  const { profile, enrollment, signOut, refresh } = useAuth();
+  const [tab, setTab] = useState<Tab>('overview');
+  const [loading, setLoading] = useState(true);
+  const [sessions, setSessions] = useState<DbSession[]>([]);
+  const [submissions, setSubmissions] = useState<DbSubmission[]>([]);
+  const [announcements, setAnnouncements] = useState<DbAnnouncement[]>([]);
+  const [settings, setSettings] = useState<DbPaymentSettings | null>(null);
+
+  const track = PROGRAMS.find((p) => p.id === enrollment?.track_id);
+
+  const load = useCallback(async () => {
+    if (!supabase || !profile) return;
+    const trackId = enrollment?.track_id;
+    const [s, sub, a, ps] = await Promise.all([
+      supabase.from('sessions').select('*').order('starts_at', { ascending: true }),
+      supabase.from('submissions').select('*').eq('user_id', profile.id),
+      supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(20),
+      supabase.from('payment_settings').select('*').eq('id', 1).maybeSingle()
+    ]);
+    const mine = (x: { track_id: string | null }) => !x.track_id || x.track_id === trackId;
+    setSessions(((s.data as DbSession[]) || []).filter(mine));
+    setSubmissions((sub.data as DbSubmission[]) || []);
+    setAnnouncements(((a.data as DbAnnouncement[]) || []).filter(mine));
+    setSettings((ps.data as DbPaymentSettings) || null);
+    setLoading(false);
+  }, [profile, enrollment?.track_id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (!profile) return null;
+
+  if (!enrollment || !track) {
+    return (
+      <div className="bg-brand-gray-50 min-h-[60vh] flex items-center justify-center px-4">
+        <div className="bg-white border border-brand-gray-200 rounded-2xl p-8 max-w-md text-center shadow-sm">
+          <h1 className="text-xl font-extrabold text-brand-navy mb-2">No enrolment found</h1>
+          <p className="text-sm text-brand-gray-500 mb-5">Your account isn't linked to a programme yet.</p>
+          <Link to="/apply" className={btnPrimary}>Choose a programme</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const now = Date.now();
+  const upcoming = sessions.filter((s) => new Date(s.starts_at).getTime() >= now - 2 * 3600 * 1000);
+  const past = sessions.filter((s) => !upcoming.includes(s)).reverse();
+  const nextSession = upcoming[0];
+  const approved = submissions.filter((s) => s.status === 'approved').length;
+  const total = track.syllabus.length;
+  const progress = Math.round((approved / total) * 100);
+
+  const markTelegram = async () => {
+    if (!supabase) return;
+    await supabase.from('enrollments').update({ telegram_joined: true }).eq('id', enrollment.id);
+    await refresh();
   };
 
-  const currentTrack = PROGRAMS.find((p) => p.id === activeStudent.trackId) || PROGRAMS[0];
-
-  const checklistItems = [
-    { label: 'Student Profile Created', done: true },
-    { label: 'Programme Track Assigned', done: true },
-    { label: 'Tuition Arrangement Confirmed', done: true },
-    { label: 'Joined Telegram Community', done: telegramJoined },
-    { label: 'Orientation Live Stream (Google Meet)', done: false }
+  const checklist = [
+    { label: 'Account & profile created', done: true },
+    { label: `Programme assigned: ${track.title}`, done: true },
+    { label: 'Tuition confirmed by admissions', done: enrollment.payment_status === 'paid' || enrollment.payment_status === 'partial' },
+    { label: 'Joined the Telegram cohort channel', done: enrollment.telegram_joined, action: enrollment.telegram_joined ? undefined : 'telegram' },
+    { label: 'First project submitted', done: submissions.length > 0 }
   ];
 
   return (
-    <div className="bg-brand-gray-50 min-h-screen py-12 px-4 sm:px-6 w-full max-w-full overflow-hidden">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Portal Header Banner */}
-        <div className="p-6 sm:p-8 bg-brand-navy text-white rounded-2xl shadow-brand flex flex-col md:flex-row md:items-center justify-between gap-6 border border-brand-navy-light">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-brand-blue/30 border-2 border-brand-amber flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-              {activeStudent.fullName.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">
-                  {activeStudent.cohort}
-                </span>
-                <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-medium">
-                  Active Enrollment
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-                {activeStudent.fullName}
-              </h1>
-              <div className="text-xs text-gray-300">
-                Track: <strong className="text-brand-amber">{currentTrack.title}</strong> · {activeStudent.email}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              to={`/academy/${currentTrack.slug}`}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded text-xs uppercase tracking-wider font-semibold transition-colors inline-flex items-center gap-1.5"
-            >
-              <BookOpen className="w-4 h-4" />
-              Syllabus
-            </Link>
-
-            <a
-              href="https://t.me/brandorax_community"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-colors shadow-md inline-flex items-center gap-2"
-            >
-              <Send className="w-3.5 h-3.5" />
-              Cohort Chat
-            </a>
-          </div>
-        </div>
-
-        {/* Top Grid: Progress Checklist & Google Meet Live Session */}
-        <div className="grid md:grid-cols-12 gap-8">
-          {/* Enrollment Status Checklist (5 cols) */}
-          <div className="md:col-span-5 bg-white border border-brand-gray-200 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold">
-                Induction Checklist
-              </h2>
-              <span className="text-xs font-bold text-brand-navy">
-                {checklistItems.filter((i) => i.done).length} of {checklistItems.length} Complete
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {checklistItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`flex items-center justify-between p-3 rounded-xl text-xs transition-all ${
-                    item.done
-                      ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
-                      : 'bg-brand-gray-50 text-brand-gray-700 border border-brand-gray-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2
-                      className={`w-4 h-4 ${
-                        item.done ? 'text-emerald-600' : 'text-brand-gray-400'
-                      }`}
-                    />
-                    <span className={item.done ? 'font-semibold' : ''}>{item.label}</span>
+    <DashboardShell
+      portalLabel="Student Portal"
+      userName={profile.full_name || 'Student'}
+      userSub={enrollment.cohort}
+      nav={NAV}
+      active={tab}
+      onChange={(id) => setTab(id as Tab)}
+      onSignOut={signOut}
+    >
+      {loading ? <Spinner /> : (
+        <>
+          {tab === 'overview' && (
+            <>
+              {/* Hero banner */}
+              <div className="relative overflow-hidden rounded-2xl bg-brand-navy text-white p-6 sm:p-8 shadow-brand border border-brand-navy-light">
+                <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-brand-blue/30 blur-3xl pointer-events-none" />
+                <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="text-[11px] uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">{enrollment.cohort}</span>
+                      <PaymentBadge status={enrollment.payment_status} />
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold">Welcome, {profile.full_name.split(' ')[0] || 'Learner'}</h1>
+                    <p className="text-sm text-white/70 mt-1">{track.title} · {track.duration}</p>
                   </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Link to={`/academy/${track.slug}`} className="inline-flex items-center gap-2 h-11 px-4 rounded-lg text-xs font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 transition-colors">
+                      <BookOpen className="w-4 h-4" /> Syllabus
+                    </Link>
+                    <a href="https://t.me/brandorax_community" target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+                      <Send className="w-4 h-4" /> Cohort chat
+                    </a>
+                  </div>
+                </div>
+              </div>
 
-                  {!item.done && item.label.includes('Telegram') && (
-                    <button
-                      onClick={() => setTelegramJoined(true)}
-                      className="text-[11px] font-bold uppercase text-brand-blue hover:underline bg-white px-2 py-0.5 rounded border border-brand-blue/30"
-                    >
-                      Confirm Joined
-                    </button>
+              {/* Stats */}
+              <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <StatCard icon={Target} label="Programme progress" value={`${progress}%`} hint={`${approved} of ${total} sprints approved`} tone="blue" />
+                <StatCard icon={FileCheck2} label="Submissions" value={submissions.length} hint={`${submissions.filter((s) => s.status === 'changes_requested').length} need changes`} tone="green" />
+                <StatCard icon={CalendarClock} label="Next live session" value={nextSession ? fmtDate(nextSession.starts_at) : '—'} hint={nextSession?.title || 'Nothing scheduled yet'} tone="amber" />
+                <StatCard icon={Wallet} label="Tuition paid" value={fmtMoney(enrollment.amount_paid)} hint={enrollment.payment_plan === 'upfront' ? 'Full tuition plan' : 'Instalment plan'} tone="navy" />
+              </div>
+
+              <div className="grid lg:grid-cols-5 gap-6">
+                <Card className="lg:col-span-3" subtitle="Next up" title={nextSession ? nextSession.title : 'No upcoming session'}>
+                  {nextSession ? (
+                    <>
+                      <p className="text-sm text-brand-gray-600 leading-relaxed mb-5">{nextSession.description || 'Join your lead practitioner for this live session.'}</p>
+                      <div className="grid sm:grid-cols-2 gap-4 bg-brand-blue-surface border border-brand-blue/15 rounded-xl p-4 mb-5 text-xs">
+                        <div><span className="block text-[10px] uppercase font-semibold text-brand-gray-400">When</span><strong className="text-sm text-brand-navy">{fmtDateTime(nextSession.starts_at)}</strong></div>
+                        <div><span className="block text-[10px] uppercase font-semibold text-brand-gray-400">Where</span><strong className="text-sm text-brand-blue">Google Meet</strong></div>
+                      </div>
+                      <a href={nextSession.meet_url || 'https://meet.google.com'} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
+                        <Video className="w-4 h-4" /> Join session
+                      </a>
+                    </>
+                  ) : (
+                    <EmptyState icon={Video} title="Nothing scheduled yet" text="Your admin will post live sessions here. You'll also get reminders on Telegram." />
                   )}
-                </div>
-              ))}
-            </div>
-          </div>
+                </Card>
 
-          {/* Upcoming Live Session on Google Meet (7 cols) */}
-          <div className="md:col-span-7 bg-brand-blue-surface border border-brand-blue/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-sm">
-            <div>
-              <div className="flex items-center justify-between text-xs mb-3">
-                <span className="text-brand-blue font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <Video className="w-4 h-4 text-brand-blue" />
-                  Upcoming Live Google Meet Session
-                </span>
-                <span className="bg-brand-blue text-white font-bold px-2.5 py-0.5 rounded text-[10px] uppercase">
-                  Weekend Live Stream
-                </span>
+                <Card className="lg:col-span-2" subtitle="Induction" title="Getting started"
+                  action={<span className="text-xs font-bold text-brand-navy">{checklist.filter((c) => c.done).length}/{checklist.length}</span>}>
+                  <ul className="space-y-2.5">
+                    {checklist.map((c) => (
+                      <li key={c.label} className={`flex items-center gap-3 p-3 rounded-xl text-xs border ${c.done ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-brand-gray-50 border-brand-gray-200 text-brand-gray-700'}`}>
+                        {c.done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <Circle className="w-4 h-4 text-brand-gray-400 shrink-0" />}
+                        <span className={`flex-1 ${c.done ? 'font-semibold' : ''}`}>{c.label}</span>
+                        {c.action === 'telegram' && (
+                          <button onClick={markTelegram} className="text-[10px] font-bold uppercase text-brand-blue border border-brand-blue/30 bg-white rounded px-2 py-0.5 hover:underline">Done</button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
               </div>
 
-              <h3 className="text-2xl font-bold text-brand-navy mb-2">
-                Sprint 01 Orientation & Environment Setup
-              </h3>
-              <p className="text-sm text-brand-gray-700 leading-relaxed mb-6">
-                Meet your lead practitioner, walkthrough the project rubrics, set up your GitHub repository, and receive the Week 1 milestone brief.
-              </p>
+              <Card subtitle="Updates" title="Announcements">
+                {announcements.length === 0 ? (
+                  <EmptyState icon={Megaphone} title="No announcements yet" text="Important updates from the BrandoraX team will show up here." />
+                ) : (
+                  <ul className="divide-y divide-brand-gray-100">
+                    {announcements.slice(0, 5).map((a) => (
+                      <li key={a.id} className="py-4 first:pt-0 last:pb-0">
+                        <div className="flex items-center justify-between gap-3 mb-1">
+                          <h3 className="text-sm font-bold text-brand-navy">{a.title}</h3>
+                          <span className="text-[11px] text-brand-gray-400 whitespace-nowrap">{fmtDate(a.created_at)}</span>
+                        </div>
+                        <p className="text-sm text-brand-gray-600 leading-relaxed">{a.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Card>
+            </>
+          )}
 
-              <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-brand-gray-200 mb-6 text-xs">
-                <div>
-                  <span className="text-brand-gray-400 block text-[10px] uppercase font-semibold">Date & Time</span>
-                  <strong className="text-brand-navy text-sm font-semibold">Saturday, 11:00 AM WAT</strong>
-                </div>
-                <div>
-                  <span className="text-brand-gray-400 block text-[10px] uppercase font-semibold">Platform</span>
-                  <strong className="text-brand-blue text-sm font-semibold">Google Meet (Live Room)</strong>
-                </div>
-              </div>
-            </div>
+          {tab === 'sprints' && (
+            <SprintsTab
+              trackId={track.id}
+              userId={profile.id}
+              syllabus={track.syllabus}
+              submissions={submissions}
+              onChanged={load}
+              progress={progress}
+            />
+          )}
 
-            <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="https://meet.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-brand-blue hover:bg-brand-blue-hover text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md inline-flex items-center gap-2 transition-colors shadow-md"
-              >
-                <Video className="w-4 h-4" />
-                Launch Google Meet Room
-              </a>
+          {tab === 'sessions' && (
+            <Card subtitle="Schedule" title="Live sessions">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gray-500 mb-3">Upcoming</h3>
+              {upcoming.length === 0 ? (
+                <EmptyState icon={CalendarClock} title="No upcoming sessions" />
+              ) : (
+                <ul className="space-y-3 mb-8">
+                  {upcoming.map((s) => <SessionRow key={s.id} s={s} live />)}
+                </ul>
+              )}
+              {past.length > 0 && (
+                <>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-brand-gray-500 mb-3 mt-6">Past</h3>
+                  <ul className="space-y-3 opacity-80">{past.slice(0, 10).map((s) => <SessionRow key={s.id} s={s} />)}</ul>
+                </>
+              )}
+            </Card>
+          )}
 
-              <a
-                href="https://t.me/brandorax_community"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white border border-brand-gray-300 hover:bg-brand-gray-50 text-brand-navy text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-md inline-flex items-center gap-2 transition-colors"
-              >
-                <Send className="w-3.5 h-3.5 text-brand-blue" />
-                Telegram Discussions
-              </a>
-            </div>
-          </div>
-        </div>
+          {tab === 'payment' && (
+            <PaymentTab
+              enrollmentId={enrollment.id}
+              status={enrollment.payment_status}
+              plan={enrollment.payment_plan}
+              paid={enrollment.amount_paid}
+              tuition={enrollment.payment_plan === 'upfront' ? track.tuition.upfront : track.tuition.installments}
+              settings={settings}
+              onChanged={refresh}
+            />
+          )}
+        </>
+      )}
+    </DashboardShell>
+  );
+};
 
-        {/* Learning Sprints & Milestone Deliverables */}
-        <div className="bg-white border border-brand-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xs uppercase tracking-wider text-brand-blue font-bold mb-1">
-                Active Sprints
-              </h2>
-              <h3 className="text-xl font-bold text-brand-navy">
-                {currentTrack.title} Sprints
-              </h3>
-            </div>
-            <span className="text-xs text-brand-gray-500 bg-brand-gray-100 px-3 py-1 rounded font-medium">
-              Phase 1 LMS Foundation
-            </span>
-          </div>
+/* ---------------------------------------------------------------- */
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {currentTrack.syllabus.map((sprint, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-xl border border-brand-gray-200 bg-brand-gray-50/70 hover:border-brand-blue/50 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between text-xs mb-2">
-                    <span className="text-brand-blue font-bold">{sprint.week}</span>
-                    <span className="bg-white px-2.5 py-0.5 rounded border border-brand-gray-200 text-brand-gray-600 font-semibold">
-                      Sprint 0{idx + 1}
-                    </span>
-                  </div>
-
-                  <h4 className="text-base font-bold text-brand-navy mb-2">
-                    {sprint.title}
-                  </h4>
-                  <p className="text-xs text-brand-gray-600 leading-relaxed mb-4">
-                    {sprint.description}
-                  </p>
-                </div>
-
-                <div className="bg-white p-3 rounded-lg border border-brand-gray-200 text-xs flex items-center justify-between">
-                  <span className="text-brand-gray-500">Milestone Artifact:</span>
-                  <strong className="text-brand-blue truncate ml-2 font-medium">{sprint.deliverable}</strong>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+const SessionRow: React.FC<{ s: DbSession; live?: boolean }> = ({ s, live }) => (
+  <li className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-brand-gray-200 bg-brand-gray-50/60">
+    <div className="flex items-start gap-3 min-w-0">
+      <div className="w-10 h-10 rounded-lg bg-brand-blue-light text-brand-blue flex items-center justify-center shrink-0"><Video className="w-4 h-4" /></div>
+      <div className="min-w-0">
+        <div className="text-sm font-bold text-brand-navy">{s.title}</div>
+        <div className="text-xs text-brand-gray-500 flex items-center gap-1.5 mt-0.5"><Clock className="w-3 h-3" />{fmtDateTime(s.starts_at)}</div>
+        {s.description && <p className="text-xs text-brand-gray-600 mt-1.5">{s.description}</p>}
       </div>
     </div>
+    {live && (
+      <a href={s.meet_url || 'https://meet.google.com'} target="_blank" rel="noopener noreferrer" className={`${btnGhost} shrink-0`}>
+        Join <ExternalLink className="w-3.5 h-3.5" />
+      </a>
+    )}
+  </li>
+);
+
+const SprintsTab: React.FC<{
+  trackId: string; userId: string; progress: number;
+  syllabus: { week: string; title: string; description: string; deliverable: string }[];
+  submissions: DbSubmission[]; onChanged: () => void;
+}> = ({ trackId, userId, syllabus, submissions, onChanged, progress }) => {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [url, setUrl] = useState('');
+  const [note, setNote] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const byIdx = useMemo(() => new Map(submissions.map((s) => [s.sprint_index, s])), [submissions]);
+
+  const open = (idx: number) => {
+    const ex = byIdx.get(idx);
+    setOpenIdx(openIdx === idx ? null : idx);
+    setUrl(ex?.url || '');
+    setNote(ex?.note || '');
+    setErr(null);
+  };
+
+  const submit = async (idx: number, title: string) => {
+    if (!supabase) return;
+    if (!/^https?:\/\//i.test(url.trim())) { setErr('Enter a full link starting with https://'); return; }
+    setBusy(true);
+    const { error } = await supabase.from('submissions').upsert(
+      { user_id: userId, track_id: trackId, sprint_index: idx, title, url: url.trim(), note: note.trim(), status: 'submitted', feedback: '' },
+      { onConflict: 'user_id,track_id,sprint_index' }
+    );
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    setOpenIdx(null);
+    onChanged();
+  };
+
+  return (
+    <>
+      <Card subtitle="Your journey" title="Sprints & milestone projects">
+        <div className="flex items-center gap-4">
+          <div className="flex-1"><ProgressBar value={progress} /></div>
+          <span className="text-sm font-extrabold text-brand-navy">{progress}%</span>
+        </div>
+        <p className="text-xs text-brand-gray-500 mt-2">A sprint counts as complete once a mentor approves your submission.</p>
+      </Card>
+
+      <div className="space-y-4">
+        {syllabus.map((sp, idx) => {
+          const sub = byIdx.get(idx);
+          const isOpen = openIdx === idx;
+          return (
+            <div key={idx} className="bg-white border border-brand-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-5 sm:p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-bold text-brand-blue">{sp.week}</span>
+                    <span className="bg-brand-gray-100 text-brand-gray-600 font-semibold px-2 py-0.5 rounded">Sprint 0{idx + 1}</span>
+                  </div>
+                  {sub ? <SubmissionBadge status={sub.status} /> : <span className="text-[11px] font-bold text-brand-gray-400">Not submitted</span>}
+                </div>
+                <h3 className="text-base font-extrabold text-brand-navy mb-1.5">{sp.title}</h3>
+                <p className="text-sm text-brand-gray-600 leading-relaxed mb-4">{sp.description}</p>
+                <div className="text-xs bg-brand-gray-50 border border-brand-gray-200 rounded-lg p-3 flex gap-2">
+                  <span className="text-brand-gray-500 shrink-0">Deliverable:</span>
+                  <strong className="text-brand-blue font-semibold">{sp.deliverable}</strong>
+                </div>
+
+                {sub?.feedback && (
+                  <div className="mt-3 text-xs bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-900">
+                    <strong>Mentor feedback:</strong> {sub.feedback}
+                  </div>
+                )}
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  {sub && <a href={sub.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-brand-blue hover:underline inline-flex items-center gap-1">View submission <ExternalLink className="w-3 h-3" /></a>}
+                  {sub?.status !== 'approved' && (
+                    <button onClick={() => open(idx)} className={btnGhost}>{sub ? 'Update submission' : 'Submit project'}</button>
+                  )}
+                </div>
+              </div>
+
+              {isOpen && (
+                <div className="border-t border-brand-gray-200 bg-brand-gray-50 p-5 sm:p-6 space-y-3">
+                  <div>
+                    <label className="block text-xs uppercase text-brand-gray-600 mb-1.5 font-bold">Project link (live URL or GitHub)</label>
+                    <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://github.com/you/project" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase text-brand-gray-600 mb-1.5 font-bold">Note for your mentor (optional)</label>
+                    <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={`${inputCls} h-auto py-2.5`} />
+                  </div>
+                  {err && <div className="text-xs font-semibold text-red-600">{err}</div>}
+                  <button disabled={busy} onClick={() => submit(idx, sp.deliverable)} className={btnPrimary}>{busy ? 'Submitting…' : 'Send for review'}</button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+const PaymentTab: React.FC<{
+  enrollmentId: string; status: string; plan: string; paid: number; tuition: string;
+  settings: DbPaymentSettings | null; onChanged: () => void;
+}> = ({ enrollmentId, status, plan, paid, tuition, settings, onChanged }) => {
+  const [busy, setBusy] = useState(false);
+  const hasBank = settings?.account_number;
+
+  const iPaid = async () => {
+    if (!supabase) return;
+    setBusy(true);
+    await supabase.from('enrollments').update({ payment_status: 'awaiting_confirmation' }).eq('id', enrollmentId);
+    setBusy(false);
+    onChanged();
+  };
+
+  return (
+    <>
+      <div className="grid sm:grid-cols-3 gap-4">
+        <StatCard icon={Wallet} label="Plan" value={plan === 'upfront' ? 'Full tuition' : 'Instalments'} hint={tuition} tone="blue" />
+        <StatCard icon={CheckCircle2} label="Amount confirmed" value={fmtMoney(paid)} tone="green" />
+        <div className="bg-white border border-brand-gray-200 rounded-2xl p-5 shadow-sm flex flex-col justify-center gap-2">
+          <div className="text-[11px] uppercase tracking-wider font-bold text-brand-gray-500">Status</div>
+          <div><PaymentBadge status={status as never} /></div>
+        </div>
+      </div>
+
+      <Card subtitle="Bank transfer" title="How to pay" action={<Landmark className="w-5 h-5 text-brand-blue" />}>
+        {hasBank ? (
+          <dl className="grid sm:grid-cols-3 gap-4 bg-brand-blue-surface border border-brand-blue/15 rounded-xl p-4 mb-4 text-sm">
+            <div><dt className="text-[10px] uppercase font-semibold text-brand-gray-400">Bank</dt><dd className="font-bold text-brand-navy">{settings?.bank_name}</dd></div>
+            <div><dt className="text-[10px] uppercase font-semibold text-brand-gray-400">Account name</dt><dd className="font-bold text-brand-navy">{settings?.account_name}</dd></div>
+            <div><dt className="text-[10px] uppercase font-semibold text-brand-gray-400">Account number</dt><dd className="font-extrabold text-brand-blue tracking-wider">{settings?.account_number}</dd></div>
+          </dl>
+        ) : (
+          <div className="text-sm text-brand-gray-500 bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-4 mb-4">
+            Account details haven't been added yet. The admissions team will share them with you shortly.
+          </div>
+        )}
+        <p className="text-sm text-brand-gray-600 leading-relaxed mb-5">{settings?.instructions}</p>
+
+        {status === 'pending' && (
+          <button disabled={busy} onClick={iPaid} className={btnPrimary}>{busy ? 'Saving…' : 'I have made the payment'}</button>
+        )}
+        {status === 'awaiting_confirmation' && (
+          <div className="text-sm font-semibold text-brand-blue bg-blue-50 border border-blue-200 rounded-xl p-4">Thanks! Admissions is verifying your transfer and will confirm shortly.</div>
+        )}
+        {status === 'paid' && (
+          <div className="text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-4">Your tuition is fully confirmed. Enjoy the programme!</div>
+        )}
+        {status === 'partial' && (
+          <button disabled={busy} onClick={iPaid} className={btnPrimary}>{busy ? 'Saving…' : 'I have paid another instalment'}</button>
+        )}
+      </Card>
+    </>
   );
 };

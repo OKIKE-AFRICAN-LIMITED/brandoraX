@@ -6,20 +6,21 @@ import {
   Layout, Palette, Globe, Terminal, BarChart3, Shield,
   LogIn, HelpCircle, Sparkles
 } from 'lucide-react';
-import { StudentProfile } from '../types';
+import { useAuth } from '../context/AuthContext';
 import { SocialLinks } from './SocialLinks';
 
 interface NavbarProps {
   onOpenQuiz: () => void;
   onOpenFAQ?: () => void;
-  student: StudentProfile | null;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuiz,
-  onOpenFAQ,
-  student
+  onOpenFAQ
 }) => {
+  const { user, isAdmin } = useAuth();
+  const portalPath = isAdmin ? '/admin' : '/dashboard';
+  const portalLabel = isAdmin ? 'Admin Console' : 'Student Dashboard';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -302,16 +303,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             Scholarships
           </Link>
 
-          {student?.isEnrolled ? (
+          {user ? (
             <Link
-              to="/dashboard"
+              to={portalPath}
               className="text-xs font-bold text-[#0040E9] hover:underline"
             >
-              Dashboard
+              {isAdmin ? 'Admin' : 'Dashboard'}
             </Link>
           ) : (
             <Link
-              to="/apply"
+              to="/login"
               className="text-xs font-bold text-gray-600 hover:text-[#000F38] transition-colors flex items-center gap-1"
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -500,13 +501,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 {/* Dashboard / Login */}
                 <Link
-                  to={student?.isEnrolled ? "/dashboard" : "/apply"}
+                  to={user ? portalPath : "/login"}
                   onClick={closeMobileMenu}
                   className="flex items-center justify-between py-3 text-gray-600 hover:text-[#000F38] text-sm font-semibold"
                 >
                   <span className="flex items-center gap-2">
                     <LogIn className="w-4 h-4 text-gray-500" />
-                    <span>{student?.isEnrolled ? "Student Dashboard" : "Student Portal / Login"}</span>
+                    <span>{user ? portalLabel : "Student Portal / Login"}</span>
                   </span>
                   <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
                 </Link>

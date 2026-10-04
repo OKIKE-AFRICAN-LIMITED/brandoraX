@@ -13,32 +13,17 @@ import { AboutPage } from './pages/AboutPage';
 import { ApplyPage } from './pages/ApplyPage';
 import { DashboardPage } from './pages/DashboardPage';
 
+import { FAQPage } from './pages/FAQPage';
+import { LoginPage } from './pages/LoginPage';
+import { AdminPage } from './pages/AdminPage';
+import { RequireAuth } from './components/RequireAuth';
+import { AuthProvider } from './context/AuthContext';
 import { TrackMatcherModal } from './components/TrackMatcherModal';
-import { FAQModal } from './components/FAQModal';
-import { StudentProfile } from './types';
 
 export const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
-  const [isFAQOpen, setIsFAQOpen] = useState<boolean>(false);
-
-  const [student, setStudent] = useState<StudentProfile | null>(() => {
-    try {
-      const saved = localStorage.getItem('brandorax_student');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const handleEnrollSuccess = (newStudent: StudentProfile) => {
-    setStudent(newStudent);
-    try {
-      localStorage.setItem('brandorax_student', JSON.stringify(newStudent));
-    } catch {
-      // LocalStorage fallback
-    }
-  };
+  const openFAQ = () => navigate('/faq');
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-gray-50 text-brand-navy overflow-x-hidden w-full max-w-full">
@@ -47,8 +32,7 @@ export const AppContent: React.FC = () => {
       {/* Persistent Multi-Page Navigation */}
       <Navbar
         onOpenQuiz={() => setIsQuizOpen(true)}
-        onOpenFAQ={() => setIsFAQOpen(true)}
-        student={student}
+        onOpenFAQ={openFAQ}
       />
 
       {/* Multi-Page Route Switcher */}
@@ -80,18 +64,27 @@ export const AppContent: React.FC = () => {
           />
           <Route
             path="/apply"
-            element={<ApplyPage onEnrollSuccess={handleEnrollSuccess} />}
+            element={<ApplyPage />}
           />
+          <Route path="/login" element={<LoginPage />} />
           <Route
             path="/dashboard"
-            element={<DashboardPage student={student} />}
+            element={<RequireAuth><DashboardPage /></RequireAuth>}
+          />
+          <Route
+            path="/admin"
+            element={<RequireAuth admin><AdminPage /></RequireAuth>}
+          />
+          <Route
+            path="/faq"
+            element={<FAQPage onOpenQuiz={() => setIsQuizOpen(true)} />}
           />
         </Routes>
       </main>
 
       {/* Persistent Multi-Page Footer */}
       <Footer 
-        onOpenFAQ={() => setIsFAQOpen(true)}
+        onOpenFAQ={openFAQ}
         onOpenQuiz={() => setIsQuizOpen(true)}
       />
 
@@ -107,15 +100,6 @@ export const AppContent: React.FC = () => {
         }}
       />
 
-      {/* Global Interactive FAQ Modal */}
-      <FAQModal
-        isOpen={isFAQOpen}
-        onClose={() => setIsFAQOpen(false)}
-        onOpenQuiz={() => {
-          setIsFAQOpen(false);
-          setIsQuizOpen(true);
-        }}
-      />
     </div>
   );
 };
@@ -123,7 +107,9 @@ export const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 };

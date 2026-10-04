@@ -164,8 +164,9 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
             <h3 className="text-2xl font-extrabold text-[#000F38] mb-2">
               Student Registration
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Enrolling in: <strong className="text-[#0040E9]">{currentTrack.title}</strong>
+            <p className="text-sm text-gray-600 mb-6 flex flex-col gap-0.5">
+              <span>Enrolling in:</span>
+              <strong className="text-[#0040E9] leading-snug">{currentTrack.title}</strong>
             </p>
 
             <div className="space-y-4 mb-6">
@@ -174,7 +175,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   Full Legal Name *
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     name="fullName"
@@ -182,7 +183,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     placeholder="e.g. Oluwaseun Adeleke"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
@@ -192,7 +193,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     name="email"
@@ -200,25 +201,25 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     placeholder="e.g. name@domain.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                     WhatsApp Phone *
                   </label>
                   <div className="relative">
-                    <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                    <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="tel"
                       name="phone"
                       placeholder="+234..."
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                      className="w-full h-11 pl-9 pr-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                     />
                   </div>
                 </div>
@@ -231,7 +232,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 px-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   >
                     <option value="Nigeria">Nigeria (₦ NGN)</option>
                     <option value="Ghana">Ghana (GH₵ GHS)</option>
@@ -246,10 +247,10 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-stretch gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="px-4 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
+                className="px-4 py-3 text-center border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
               >
                 Back
               </button>
@@ -261,7 +262,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   }
                   setStep(3);
                 }}
-                className="flex-1 bg-[#0040E9] hover:bg-[#0035C2] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+                className="flex-1 whitespace-nowrap bg-[#0040E9] hover:bg-[#0035C2] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
               >
                 <span>Proceed to Tuition Plan</span>
                 <ArrowRight className="w-4 h-4" />

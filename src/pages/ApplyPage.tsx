@@ -3,13 +3,11 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, ArrowRight, User, Mail, Phone, Globe, CreditCard, Send, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PROGRAMS } from '../data/programsData';
-import { StudentProfile } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { Landmark } from 'lucide-react';
 
-interface ApplyPageProps {
-  onEnrollSuccess: (student: StudentProfile) => void;
-}
-
-export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
+export const ApplyPage: React.FC = () => {
+  const { signUp, configured } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const initialTrack = searchParams.get('track') || 'web-dev';
@@ -19,11 +17,14 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    password: '',
     phone: '',
     country: 'Nigeria',
     paymentPlan: 'upfront' as 'upfront' | 'installment'
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('track')) {
@@ -40,36 +41,40 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
     });
   };
 
-  const handleCompleteEnrollment = () => {
+  const handleCompleteEnrollment = async () => {
     setIsProcessing(true);
+    setFormError(null);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      const studentRecord: StudentProfile = {
-        fullName: formData.fullName || 'Student Learner',
-        email: formData.email || 'learner@brandorax.africa',
-        phone: formData.phone || '+234 800 000 0000',
-        country: formData.country,
-        trackId: selectedTrackId,
-        cohort: 'Cohort 1 (Alpha)',
-        paymentPlan: formData.paymentPlan,
-        isEnrolled: true,
-        enrollmentDate: new Date().toISOString()
-      };
+    const result = await signUp({
+      email: formData.email.trim(),
+      password: formData.password,
+      fullName: formData.fullName.trim(),
+      phone: formData.phone.trim(),
+      country: formData.country,
+      trackId: selectedTrackId,
+      paymentPlan: formData.paymentPlan
+    });
 
-      try {
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      } catch (e) {
-        // Safe fallback
-      }
+    setIsProcessing(false);
 
-      onEnrollSuccess(studentRecord);
-      setStep(4);
-    }, 1200);
+    if (result.error) {
+      setFormError(result.error);
+      return;
+    }
+
+    setNeedsConfirmation(Boolean(result.needsConfirmation));
+
+    try {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    } catch (e) {
+      // Safe fallback
+    }
+
+    setStep(4);
   };
 
   return (
@@ -156,8 +161,9 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#000F38] mb-2">
               Student Registration
             </h1>
-            <p className="text-sm text-gray-600 mb-6">
-              Enrolling in: <strong className="text-[#0040E9]">{currentTrack.title}</strong>
+            <p className="text-sm text-gray-600 mb-6 flex flex-col gap-0.5">
+              <span>Enrolling in:</span>
+              <strong className="text-[#0040E9] leading-snug">{currentTrack.title}</strong>
             </p>
 
             <div className="space-y-4 mb-8">
@@ -166,7 +172,7 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
                   Full Legal Name *
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     name="fullName"
@@ -174,7 +180,7 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
                     placeholder="e.g. Oluwaseun Adeleke"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
@@ -184,7 +190,7 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     name="email"
@@ -192,25 +198,43 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
                     placeholder="e.g. seun@domain.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
+                  Create Password * <span className="normal-case font-medium text-gray-400">(min. 8 characters)</span>
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    name="password"
+                    autoComplete="new-password"
+                    placeholder="Used to sign in to your student portal"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs uppercase text-gray-600 mb-1.5 font-bold">
                     WhatsApp Phone *
                   </label>
                   <div className="relative">
-                    <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                    <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="tel"
                       name="phone"
                       placeholder="+234..."
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                      className="w-full h-11 pl-9 pr-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                     />
                   </div>
                 </div>
@@ -223,7 +247,7 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 px-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   >
                     <option value="Nigeria">Nigeria (₦ NGN)</option>
                     <option value="Ghana">Ghana (GH₵ GHS)</option>
@@ -238,27 +262,35 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-stretch gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="px-5 py-3.5 border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
+                className="px-5 py-3.5 text-center border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={() => {
-                  if (!formData.fullName || !formData.email) {
-                    alert('Please enter your full name and email to proceed.');
+                  if (!formData.fullName || !formData.email || !formData.phone) {
+                    setFormError('Please enter your name, email and WhatsApp number.');
                     return;
                   }
+                  if (formData.password.length < 8) {
+                    setFormError('Your password must be at least 8 characters.');
+                    return;
+                  }
+                  setFormError(null);
                   setStep(3);
                 }}
-                className="flex-1 bg-[#0040E9] hover:bg-[#0035C2] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+                className="flex-1 whitespace-nowrap bg-[#0040E9] hover:bg-[#0035C2] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
               >
                 <span>Continue to Tuition Plan</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
+            {formError && step === 2 && (
+              <div className="mt-4 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</div>
+            )}
           </div>
         )}
 
@@ -312,43 +344,41 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
               </div>
             </div>
 
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-8">
-              <div className="flex items-center justify-between text-xs text-gray-600 mb-3 font-semibold">
-                <span className="flex items-center gap-1.5 font-bold text-[#000F38]">
-                  <CreditCard className="w-4 h-4 text-[#0040E9]" />
-                  Supported Checkout Channels
-                </span>
-                <span className="text-emerald-600 font-bold">256-Bit SSL Encrypted</span>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+              <div className="flex items-center gap-2 text-xs mb-2 font-bold text-[#000F38]">
+                <Landmark className="w-4 h-4 text-[#0040E9]" />
+                Pay by bank transfer
               </div>
-              <div className="flex items-center gap-3 text-xs text-gray-600 font-medium">
-                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
-                  Paystack
-                </span>
-                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
-                  Flutterwave
-                </span>
-                <span className="bg-white px-2.5 py-1 rounded-lg border border-gray-200 font-bold text-[#000F38]">
-                  USD Stripe
-                </span>
-              </div>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                After you confirm, our admissions team's account details will appear on your student dashboard. Transfer your tuition, tap <strong>“I have made the payment”</strong>, and we'll verify it within 24 hours.
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            {!configured && (
+              <div className="mb-6 text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                Backend not connected yet — add your Supabase keys to <code>.env</code> to enable enrolment.
+              </div>
+            )}
+            {formError && (
+              <div className="mb-6 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</div>
+            )}
+
+            <div className="flex flex-col-reverse sm:flex-row sm:items-stretch gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="px-5 py-3.5 border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
+                className="px-5 py-3.5 text-center border border-gray-300 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase text-gray-600 transition-colors"
               >
                 Back
               </button>
               <button
-                disabled={isProcessing}
+                disabled={isProcessing || !configured}
                 onClick={handleCompleteEnrollment}
-                className="flex-1 bg-[#000F38] hover:bg-black text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                className="flex-1 whitespace-nowrap bg-[#000F38] hover:bg-black text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
               >
                 {isProcessing ? (
                   <span className="inline-flex items-center gap-2">
                     <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Securing Admission Seat...
+                    Creating your account...
                   </span>
                 ) : (
                   <>
@@ -373,7 +403,10 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
             </h2>
 
             <p className="text-sm text-gray-600 max-w-md mx-auto mb-6">
-              Congratulations <strong>{formData.fullName || 'Learner'}</strong>, your admission into <strong>{currentTrack.title}</strong> (Cohort 1) is confirmed!
+              Congratulations <strong>{formData.fullName || 'Learner'}</strong>, your place in <strong>{currentTrack.title}</strong> (Cohort 1) is reserved.
+              {needsConfirmation
+                ? ' Please check your email and verify your address, then sign in to open your portal.'
+                : ' Open your dashboard to see payment details and your first sprint.'}
             </p>
 
             <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-5 mb-8 text-left">
@@ -405,10 +438,10 @@ export const ApplyPage: React.FC<ApplyPageProps> = ({ onEnrollSuccess }) => {
             </div>
 
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(needsConfirmation ? '/login' : '/dashboard')}
               className="w-full bg-[#000F38] hover:bg-black text-white py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center justify-center gap-2"
             >
-              <span>Go to Student Dashboard Portal</span>
+              <span>{needsConfirmation ? 'Go to Sign In' : 'Go to Student Dashboard Portal'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

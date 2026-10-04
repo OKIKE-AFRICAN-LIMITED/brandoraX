@@ -13,7 +13,7 @@ interface FAQItem {
   category: 'General' | 'Programmes' | 'Scholarships' | 'Hiring & Partnerships';
 }
 
-const FAQS: FAQItem[] = [
+export const FAQS: FAQItem[] = [
   {
     category: 'General',
     question: 'What is BrandoraX?',
