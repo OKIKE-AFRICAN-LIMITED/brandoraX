@@ -158,16 +158,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Fallback: If user was returned, also directly ensure profile and enrollment are inserted
     if (data.user) {
       try {
-        await Promise.allSettled([
-          supabase.from('profiles').upsert({
-            id: data.user.id,
-            full_name: input.fullName,
-            email: input.email,
-            phone: input.phone,
-            country: input.country,
-            role: 'student'
-          }),
-          supabase.from('enrollments').upsert({
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          full_name: input.fullName,
+          email: input.email,
+          phone: input.phone,
+          country: input.country,
+          role: 'student'
+        });
+
+        // Only insert fallback enrollment if DB trigger didn't already create it
+        const { data: existingEnrollment } = await supabase
+          .from('enrollments')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .maybeSingle();
+
+        if (!existingEnrollment) {
+          await supabase.from('enrollments').insert({
             user_id: data.user.id,
             track_id: input.trackId,
             payment_plan: input.paymentPlan,
@@ -176,8 +184,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             amount_paid: 0,
             telegram_joined: false,
             status: 'active'
-          })
-        ]);
+          });
+        }
       } catch (insertErr) {
         console.warn('Direct enrollment insert notice:', insertErr);
       }

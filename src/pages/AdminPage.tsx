@@ -21,7 +21,7 @@ type Tab = 'overview' | 'students' | 'payments' | 'sessions' | 'submissions' | '
 const trackName = (id: string | null) => (id ? PROGRAMS.find((p) => p.id === id)?.title || id : 'All tracks');
 
 export const AdminPage: React.FC = () => {
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, refresh, updateProfile } = useAuth();
   const [tab, setTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -33,6 +33,43 @@ export const AdminPage: React.FC = () => {
   const [announcements, setAnnouncements] = useState<DbAnnouncement[]>([]);
   const [settings, setSettings] = useState<DbPaymentSettings | null>(null);
   const [admins, setAdmins] = useState<DbAdmin[]>([]);
+
+  const handleUploadAvatar = async (file: File) => {
+    if (!supabase || !profile) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, WEBP).');
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      alert('Image size exceeds 4MB. Please choose a smaller photo.');
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop() || 'png';
+      const filePath = `${profile.id}/avatar-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) {
+        console.error('Avatar upload error:', uploadError);
+        alert('Failed to upload image. Please verify Supabase storage bucket permissions.');
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      await updateProfile({ avatar_url: urlData.publicUrl });
+      await refresh();
+    } catch (err) {
+      console.error('Failed to upload avatar:', err);
+      alert('Failed to upload profile picture.');
+    }
+  };
 
   const load = useCallback(async () => {
     if (!supabase) return;
@@ -93,11 +130,33 @@ export const AdminPage: React.FC = () => {
     return list;
   }, [profiles, enrollments, admins]);
 
-  const enrollOf = useMemo(() => new Map(enrollments.map((e) => [e.user_id, e])), [enrollments]);
+  // Deduplicate enrollments by user_id to prevent duplicate database rows in stats, queues, and recent feeds
+  const deduplicatedEnrollments = useMemo(() => {
+    const map = new Map<string, DbEnrollment>();
+    
+    // Sort to prioritize confirmed/awaiting over pending, then newest created_at
+    const priority = { paid: 4, partial: 3, awaiting_confirmation: 2, pending: 1 };
+    
+    const sorted = [...enrollments].sort((a, b) => {
+      const pDiff = (priority[b.payment_status] || 0) - (priority[a.payment_status] || 0);
+      if (pDiff !== 0) return pDiff;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
-  const awaiting = enrollments.filter((e) => e.payment_status === 'awaiting_confirmation');
+    sorted.forEach((e) => {
+      if (!map.has(e.user_id)) {
+        map.set(e.user_id, e);
+      }
+    });
+
+    return Array.from(map.values());
+  }, [enrollments]);
+
+  const enrollOf = useMemo(() => new Map(deduplicatedEnrollments.map((e) => [e.user_id, e])), [deduplicatedEnrollments]);
+
+  const awaiting = deduplicatedEnrollments.filter((e) => e.payment_status === 'awaiting_confirmation');
   const toReview = submissions.filter((s) => s.status === 'submitted');
-  const revenue = enrollments.reduce((sum, e) => sum + Number(e.amount_paid || 0), 0);
+  const revenue = deduplicatedEnrollments.reduce((sum, e) => sum + Number(e.amount_paid || 0), 0);
 
   const nav: NavItem[] = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -116,6 +175,8 @@ export const AdminPage: React.FC = () => {
       portalLabel="Admin Console"
       userName={profile.full_name || 'Admin'}
       userSub="Administrator"
+      avatarUrl={profile.avatar_url}
+      onUploadAvatar={handleUploadAvatar}
       nav={nav}
       active={tab}
       onChange={(id) => setTab(id as Tab)}
@@ -130,7 +191,7 @@ export const AdminPage: React.FC = () => {
         <>
           {tab === 'overview' && (
             <Overview
-              students={students} enrollments={enrollments} awaiting={awaiting.length}
+              students={students} enrollments={deduplicatedEnrollments} awaiting={awaiting.length}
               toReview={toReview.length} revenue={revenue} sessions={sessions}
               byId={byId} go={(t) => setTab(t)} onRefresh={load} refreshing={refreshing}
             />

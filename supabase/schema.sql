@@ -44,6 +44,16 @@ create table if not exists public.enrollments (
   created_at      timestamptz not null default now()
 );
 
+-- Ensure unique enrollment per student per track to prevent duplicate registrations
+alter table public.enrollments drop constraint if exists enrollments_user_track_unique;
+delete from public.enrollments a using public.enrollments b
+where a.user_id = b.user_id 
+  and a.track_id = b.track_id 
+  and a.id <> b.id 
+  and (a.created_at < b.created_at or (a.payment_status = 'pending' and b.payment_status <> 'pending'));
+
+alter table public.enrollments add constraint enrollments_user_track_unique unique (user_id, track_id);
+
 create table if not exists public.sessions (
   id          uuid primary key default gen_random_uuid(),
   track_id    text,                       -- null = open to all tracks

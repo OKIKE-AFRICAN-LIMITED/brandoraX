@@ -75,9 +75,9 @@ export const DashboardShell: React.FC<ShellProps> = ({
           </span>
         </div>
 
-        {/* Admin Portal Switcher */}
+        {/* Admin Portal Switcher (Mobile Drawer Only - on desktop, it sits in topbar) */}
         {isAdmin && (
-          <div className="mt-3.5 p-2 rounded-xl bg-white/10 border border-white/15">
+          <div className="lg:hidden mt-3.5 p-2 rounded-xl bg-white/10 border border-white/15">
             <div className="text-[10px] uppercase font-bold text-brand-amber tracking-wider mb-1.5 flex items-center justify-between">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-brand-amber" />
