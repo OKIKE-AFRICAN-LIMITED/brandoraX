@@ -34,9 +34,17 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
         {/* Top Portal Header */}
         <div className="p-6 sm:p-8 border-b border-brand-gray-200 bg-brand-navy text-white rounded-t-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-brand-blue/30 border-2 border-brand-amber flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
-              {student?.fullName ? student.fullName.charAt(0).toUpperCase() : 'S'}
-            </div>
+            {student?.avatarUrl ? (
+              <img
+                src={student.avatarUrl}
+                alt={student.fullName}
+                className="w-14 h-14 rounded-full object-cover border-2 border-brand-amber flex-shrink-0"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-brand-blue/30 border-2 border-brand-amber flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                {student?.fullName ? student.fullName.charAt(0).toUpperCase() : 'S'}
+              </div>
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs uppercase tracking-wider text-brand-amber font-bold">

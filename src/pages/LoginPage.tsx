@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { btnPrimary } from '../components/dashboard/ui';
 
@@ -10,12 +10,13 @@ export const LoginPage: React.FC = () => {
   const location = useLocation() as { state?: { from?: string } };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (user) {
-      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : '/dashboard');
+      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : profile?.role === 'tutor' ? '/tutor' : '/dashboard');
       navigate(target, { replace: true });
     }
   }, [user, profile, navigate, location.state]);
@@ -29,7 +30,7 @@ export const LoginPage: React.FC = () => {
       setError(err);
       setBusy(false);
     } else {
-      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : '/dashboard');
+      const target = location.state?.from || (profile?.role === 'admin' ? '/admin' : profile?.role === 'tutor' ? '/tutor' : '/dashboard');
       navigate(target, { replace: true });
     }
   };
@@ -68,10 +69,23 @@ export const LoginPage: React.FC = () => {
             <div className="relative">
               <Lock className="w-4 h-4 text-brand-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="password" required autoComplete="current-password" value={password}
-                onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
-                className="w-full h-11 pl-10 pr-4 bg-brand-gray-50 border border-brand-gray-300 rounded-lg text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
+                type={showPassword ? 'text' : 'password'}
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full h-11 pl-10 pr-11 bg-brand-gray-50 border border-brand-gray-300 rounded-lg text-sm text-brand-navy focus:outline-none focus:border-brand-blue"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-brand-gray-400 hover:text-brand-navy p-1 transition-colors"
+                title={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 

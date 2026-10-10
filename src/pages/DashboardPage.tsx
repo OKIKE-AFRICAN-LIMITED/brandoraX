@@ -12,7 +12,7 @@ import {
   Card, StatCard, PaymentBadge, SubmissionBadge, EmptyState, ProgressBar, Spinner,
   inputCls, btnPrimary, btnGhost, fmtDate, fmtDateTime, fmtMoney
 } from '../components/dashboard/ui';
-import type { DbAnnouncement, DbPaymentSettings, DbSession, DbSubmission } from '../types/db';
+import type { DbAnnouncement, DbEnrollment, DbPaymentSettings, DbSession, DbSubmission } from '../types/db';
 
 type Tab = 'overview' | 'sprints' | 'sessions' | 'payment';
 
@@ -24,19 +24,70 @@ const NAV: NavItem[] = [
 ];
 
 export const DashboardPage: React.FC = () => {
-  const { profile, enrollment, signOut, refresh } = useAuth();
+  const { profile, enrollment, signOut, refresh, updateProfile, isAdmin } = useAuth();
   const [tab, setTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
+  const [adminTrackId, setAdminTrackId] = useState<string>('web-dev');
   const [sessions, setSessions] = useState<DbSession[]>([]);
   const [submissions, setSubmissions] = useState<DbSubmission[]>([]);
   const [announcements, setAnnouncements] = useState<DbAnnouncement[]>([]);
   const [settings, setSettings] = useState<DbPaymentSettings | null>(null);
 
-  const track = PROGRAMS.find((p) => p.id === enrollment?.track_id);
+  const effectiveTrack = PROGRAMS.find((p) => p.id === (enrollment?.track_id || adminTrackId)) || PROGRAMS[0];
+  const effectiveEnrollment: DbEnrollment = enrollment || {
+    id: 'admin-preview-enrollment',
+    user_id: profile?.id || 'admin',
+    track_id: effectiveTrack.id,
+    cohort: 'Cohort 1 (Alpha) — Admin Preview',
+    payment_plan: 'upfront',
+    payment_status: 'paid',
+    amount_paid: 150000,
+    telegram_joined: true,
+    status: 'active',
+    created_at: new Date().toISOString()
+  };
+
+  const handleUploadAvatar = async (file: File) => {
+    if (!supabase || !profile) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, WEBP).');
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      alert('Image size exceeds 4MB. Please choose a smaller photo.');
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop() || 'png';
+      const filePath = `${profile.id}/avatar-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) {
+        console.error('Avatar upload error:', uploadError);
+        alert('Failed to upload image. Please verify storage permissions or network connection.');
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const publicUrl = urlData.publicUrl;
+      await updateProfile({ avatar_url: publicUrl });
+      await refresh();
+    } catch (err) {
+      console.error('Failed to upload avatar:', err);
+      alert('Failed to upload profile picture.');
+    }
+  };
 
   const load = useCallback(async () => {
     if (!supabase || !profile) return;
-    const trackId = enrollment?.track_id;
+    const trackId = enrollment?.track_id || (isAdmin ? adminTrackId : undefined);
     const [s, sub, a, ps] = await Promise.all([
       supabase.from('sessions').select('*').order('starts_at', { ascending: true }),
       supabase.from('submissions').select('*').eq('user_id', profile.id),
@@ -49,18 +100,20 @@ export const DashboardPage: React.FC = () => {
     setAnnouncements(((a.data as DbAnnouncement[]) || []).filter(mine));
     setSettings((ps.data as DbPaymentSettings) || null);
     setLoading(false);
-  }, [profile, enrollment?.track_id]);
+  }, [profile, enrollment?.track_id, isAdmin, adminTrackId]);
 
   useEffect(() => { load(); }, [load]);
 
   if (!profile) return null;
 
-  if (!enrollment || !track) {
+  if (!isAdmin && !enrollment) {
     return (
       <DashboardShell
         portalLabel="Student Portal"
         userName={profile.full_name || 'Student'}
         userSub="Enrolment Pending"
+        avatarUrl={profile.avatar_url}
+        onUploadAvatar={handleUploadAvatar}
         nav={NAV}
         active="overview"
         onChange={() => {}}
@@ -82,6 +135,9 @@ export const DashboardPage: React.FC = () => {
     );
   }
 
+  const track = effectiveTrack;
+  const activeEnrollment = effectiveEnrollment;
+
   const now = Date.now();
   const upcoming = sessions.filter((s) => new Date(s.starts_at).getTime() >= now - 2 * 3600 * 1000);
   const past = sessions.filter((s) => !upcoming.includes(s)).reverse();
@@ -92,28 +148,58 @@ export const DashboardPage: React.FC = () => {
 
   const markTelegram = async () => {
     if (!supabase) return;
-    await supabase.from('enrollments').update({ telegram_joined: true }).eq('id', enrollment.id);
+    await supabase.from('enrollments').update({ telegram_joined: true }).eq('id', activeEnrollment.id);
     await refresh();
   };
 
   const checklist = [
     { label: 'Account & profile created', done: true },
     { label: `Programme assigned: ${track.title}`, done: true },
-    { label: 'Tuition confirmed by admissions', done: enrollment.payment_status === 'paid' || enrollment.payment_status === 'partial' },
-    { label: 'Joined the Telegram cohort channel', done: enrollment.telegram_joined, action: enrollment.telegram_joined ? undefined : 'telegram' },
+    { label: 'Tuition confirmed by admin', done: activeEnrollment.payment_status === 'paid' || activeEnrollment.payment_status === 'partial' },
+    { label: 'Joined the Telegram cohort channel', done: activeEnrollment.telegram_joined, action: activeEnrollment.telegram_joined ? undefined : 'telegram' },
     { label: 'First project submitted', done: submissions.length > 0 }
   ];
 
   return (
     <DashboardShell
-      portalLabel="Student Portal"
-      userName={profile.full_name || 'Student'}
-      userSub={enrollment.cohort}
+      portalLabel={isAdmin ? "Student Portal (Admin Preview)" : "Student Portal"}
+      userName={profile.full_name || (isAdmin ? 'Admin' : 'Student')}
+      userSub={activeEnrollment.cohort}
+      avatarUrl={profile.avatar_url}
+      onUploadAvatar={handleUploadAvatar}
       nav={NAV}
       active={tab}
       onChange={(id) => setTab(id as Tab)}
       onSignOut={signOut}
     >
+      {/* Admin Preview Mode Floating Banner */}
+      {isAdmin && (
+        <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-950 shadow-sm mb-2">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded bg-amber-200 font-extrabold uppercase tracking-wider text-amber-900">
+              Admin Preview
+            </span>
+            <span className="font-semibold">
+              Inspecting the student learner experience. You can switch tracks to preview any curriculum.
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
+            <span className="font-bold text-amber-900 text-xs">Track:</span>
+            <select
+              value={adminTrackId}
+              onChange={(e) => setAdminTrackId(e.target.value)}
+              className="flex-1 sm:flex-initial h-8 px-2.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-brand-navy focus:outline-none min-w-[140px]"
+            >
+              {PROGRAMS.map((p) => (
+                <option key={p.id} value={p.id}>{p.title}</option>
+              ))}
+            </select>
+            <Link to="/admin" className="px-3 py-1 bg-amber-200 hover:bg-amber-300 rounded-lg font-bold text-amber-950 transition-colors">
+              Console →
+            </Link>
+          </div>
+        </div>
+      )}
       {loading ? <Spinner /> : (
         <>
           {tab === 'overview' && (
@@ -124,8 +210,8 @@ export const DashboardPage: React.FC = () => {
                 <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <span className="text-[11px] uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">{enrollment.cohort}</span>
-                      <PaymentBadge status={enrollment.payment_status} />
+                      <span className="text-[11px] uppercase tracking-wider text-brand-amber font-bold bg-white/10 px-2.5 py-0.5 rounded">{activeEnrollment.cohort}</span>
+                      <PaymentBadge status={activeEnrollment.payment_status} />
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-extrabold">Welcome, {profile.full_name.split(' ')[0] || 'Learner'}</h1>
                     <p className="text-sm text-white/70 mt-1">{track.title} · {track.duration}</p>
@@ -146,7 +232,7 @@ export const DashboardPage: React.FC = () => {
                 <StatCard icon={Target} label="Programme progress" value={`${progress}%`} hint={`${approved} of ${total} sprints approved`} tone="blue" />
                 <StatCard icon={FileCheck2} label="Submissions" value={submissions.length} hint={`${submissions.filter((s) => s.status === 'changes_requested').length} need changes`} tone="green" />
                 <StatCard icon={CalendarClock} label="Next live session" value={nextSession ? fmtDate(nextSession.starts_at) : '—'} hint={nextSession?.title || 'Nothing scheduled yet'} tone="amber" />
-                <StatCard icon={Wallet} label="Tuition paid" value={fmtMoney(enrollment.amount_paid)} hint={enrollment.payment_plan === 'upfront' ? 'Full tuition plan' : 'Instalment plan'} tone="navy" />
+                <StatCard icon={Wallet} label="Tuition paid" value={fmtMoney(activeEnrollment.amount_paid)} hint={activeEnrollment.payment_plan === 'upfront' ? 'Full tuition plan' : 'Instalment plan'} tone="navy" />
               </div>
 
               <div className="grid lg:grid-cols-5 gap-6">
@@ -235,11 +321,11 @@ export const DashboardPage: React.FC = () => {
 
           {tab === 'payment' && (
             <PaymentTab
-              enrollmentId={enrollment.id}
-              status={enrollment.payment_status}
-              plan={enrollment.payment_plan}
-              paid={enrollment.amount_paid}
-              tuition={enrollment.payment_plan === 'upfront' ? track.tuition.upfront : track.tuition.installments}
+              enrollmentId={activeEnrollment.id}
+              status={activeEnrollment.payment_status}
+              plan={activeEnrollment.payment_plan}
+              paid={activeEnrollment.amount_paid}
+              tuition={activeEnrollment.payment_plan === 'upfront' ? track.tuition.upfront : track.tuition.installments}
               settings={settings}
               onChanged={refresh}
             />
@@ -330,7 +416,7 @@ const SprintsTab: React.FC<{
                 </div>
                 <h3 className="text-base font-extrabold text-brand-navy mb-1.5">{sp.title}</h3>
                 <p className="text-sm text-brand-gray-600 leading-relaxed mb-4">{sp.description}</p>
-                <div className="text-xs bg-brand-gray-50 border border-brand-gray-200 rounded-lg p-3 flex gap-2">
+                <div className="text-xs bg-brand-gray-50 border border-brand-gray-200 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                   <span className="text-brand-gray-500 shrink-0">Deliverable:</span>
                   <strong className="text-brand-blue font-semibold">{sp.deliverable}</strong>
                 </div>
@@ -406,7 +492,7 @@ const PaymentTab: React.FC<{
           </dl>
         ) : (
           <div className="text-sm text-brand-gray-500 bg-brand-gray-50 border border-brand-gray-200 rounded-xl p-4 mb-4">
-            Account details haven't been added yet. The admissions team will share them with you shortly.
+            Account details haven't been added yet. The admin team will share them with you shortly.
           </div>
         )}
         <p className="text-sm text-brand-gray-600 leading-relaxed mb-5">{settings?.instructions}</p>
@@ -415,7 +501,7 @@ const PaymentTab: React.FC<{
           <button disabled={busy} onClick={iPaid} className={btnPrimary}>{busy ? 'Saving…' : 'I have made the payment'}</button>
         )}
         {status === 'awaiting_confirmation' && (
-          <div className="text-sm font-semibold text-brand-blue bg-blue-50 border border-blue-200 rounded-xl p-4">Thanks! Admissions is verifying your transfer and will confirm shortly.</div>
+          <div className="text-sm font-semibold text-brand-blue bg-blue-50 border border-blue-200 rounded-xl p-4">Thanks! Admin is verifying your transfer and will confirm shortly.</div>
         )}
         {status === 'paid' && (
           <div className="text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-4">Your tuition is fully confirmed. Enjoy the programme!</div>

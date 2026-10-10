@@ -55,7 +55,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen text-[#000F38] w-full overflow-hidden">
-      {/* 1. Hero: ABOUT BRANDORAX */}
+      {/* 1. Hero: About Brandorax */}
       <section className="relative min-h-[75vh] lg:min-h-[78vh] flex items-center bg-[#000F38] text-white overflow-hidden py-16 sm:py-20 lg:py-24 border-b border-white/10 w-full">
         {/* Background Image with Directional Fade */}
         <div className="absolute inset-0 z-0">
@@ -262,7 +262,7 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. THE BRANDORAX ECOSYSTEM (Partnerships comes LAST) */}
+      {/* 6. The Brandorax Ecosystem (Partnerships comes LAST) */}
       <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full">
         <div className="max-w-3xl mb-14">
           <div className="text-xs font-bold uppercase tracking-widest text-[#0040E9] mb-2">

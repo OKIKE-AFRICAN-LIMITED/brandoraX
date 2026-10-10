@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, User, Mail, Phone, Globe, CreditCard, Send, Lock } from 'lucide-react';
+import { CheckCircle2, ArrowRight, User, Mail, Phone, Globe, CreditCard, Send, Lock, Eye, EyeOff } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PROGRAMS } from '../data/programsData';
 import { useAuth } from '../context/AuthContext';
@@ -22,6 +22,7 @@ export const ApplyPage: React.FC = () => {
     country: 'Nigeria',
     paymentPlan: 'upfront' as 'upfront' | 'installment'
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
@@ -78,8 +79,8 @@ export const ApplyPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen py-16 px-4 sm:px-6 flex items-center justify-center w-full overflow-hidden">
-      <div className="max-w-2xl w-full bg-white border border-gray-200 rounded-3xl p-6 sm:p-10 shadow-xl">
+    <div className="bg-[#F8FAFC] min-h-screen py-12 sm:py-16 px-3 sm:px-6 flex items-center justify-center w-full overflow-hidden">
+      <div className="max-w-2xl w-full bg-white border border-gray-200 rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-xl">
         {/* Stepper Progress Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between text-xs text-gray-500 mb-2 font-bold uppercase tracking-wider">
@@ -210,14 +211,23 @@ export const ApplyPage: React.FC = () => {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     autoComplete="new-password"
                     placeholder="Used to sign in to your student portal"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full h-11 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
+                    className="w-full h-11 pl-10 pr-11 bg-gray-50 border border-gray-300 rounded-lg text-sm text-[#000F38] focus:outline-none focus:border-[#0040E9]"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#000F38] p-1 transition-colors"
+                    title={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
@@ -282,10 +292,10 @@ export const ApplyPage: React.FC = () => {
                   setFormError(null);
                   setStep(3);
                 }}
-                className="flex-1 whitespace-nowrap bg-[#0040E9] hover:bg-[#0035C2] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md"
+                className="flex-1 bg-[#0040E9] hover:bg-[#0035C2] text-white py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md text-center"
               >
                 <span>Continue to Tuition Plan</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
             </div>
             {formError && step === 2 && (
@@ -304,7 +314,7 @@ export const ApplyPage: React.FC = () => {
               Track: <strong>{currentTrack.title}</strong>
             </p>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-6">
               <div
                 onClick={() => setFormData({ ...formData, paymentPlan: 'upfront' })}
                 className={`p-5 rounded-xl border cursor-pointer transition-all ${
@@ -373,17 +383,17 @@ export const ApplyPage: React.FC = () => {
               <button
                 disabled={isProcessing || !configured}
                 onClick={handleCompleteEnrollment}
-                className="flex-1 whitespace-nowrap bg-[#000F38] hover:bg-black text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                className="flex-1 bg-[#000F38] hover:bg-black text-white py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50 text-center"
               >
                 {isProcessing ? (
                   <span className="inline-flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Creating your account...
+                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"></span>
+                    <span>Creating account...</span>
                   </span>
                 ) : (
                   <>
-                    <span>Confirm & Complete Enrollment</span>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>Confirm &amp; Complete Enrollment</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   </>
                 )}
               </button>

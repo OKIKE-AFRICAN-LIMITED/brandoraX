@@ -52,17 +52,17 @@ export const TrackDetailPage: React.FC = () => {
             {program.tagline}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <Link
               to={`/apply?track=${program.id}`}
-              className="bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-2"
+              className="w-full sm:w-auto bg-brand-blue hover:bg-brand-blue-hover text-white px-8 py-4 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-md inline-flex items-center justify-center gap-2 text-center"
             >
               Enroll in {program.title}
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
 
             <div className="text-xs font-medium text-gray-300 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Tuition: <strong className="text-white">{program.tuition.upfront}</strong></span>
             </div>
           </div>
@@ -121,8 +121,8 @@ export const TrackDetailPage: React.FC = () => {
                       {sprint.description}
                     </p>
 
-                    <div className="bg-white border border-brand-gray-200 rounded-lg p-3 text-xs flex items-center justify-between">
-                      <span className="text-brand-gray-500">Deliverable Shipped:</span>
+                    <div className="bg-white border border-brand-gray-200 rounded-lg p-3 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                      <span className="text-brand-gray-500 shrink-0">Deliverable Shipped:</span>
                       <strong className="text-brand-blue font-bold">{sprint.deliverable}</strong>
                     </div>
                   </div>

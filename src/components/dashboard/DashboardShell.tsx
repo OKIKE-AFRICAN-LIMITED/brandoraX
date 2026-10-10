@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LogOut, ExternalLink, Menu, X, type LucideIcon, ChevronRight } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { LogOut, ExternalLink, Menu, X, type LucideIcon, ChevronRight, Camera, Loader2, ShieldCheck } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export interface NavItem {
   id: string;
@@ -13,6 +14,8 @@ interface ShellProps {
   portalLabel: string;
   userName: string;
   userSub: string;
+  avatarUrl?: string | null;
+  onUploadAvatar?: (file: File) => Promise<void>;
   nav: NavItem[];
   active: string;
   onChange: (id: string) => void;
@@ -28,14 +31,32 @@ export const DashboardShell: React.FC<ShellProps> = ({
   portalLabel,
   userName,
   userSub,
+  avatarUrl,
+  onUploadAvatar,
   nav,
   active,
   onChange,
   onSignOut,
   children
 }) => {
+  const { isAdmin } = useAuth();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const activeItem = nav.find((n) => n.id === active) || nav[0];
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onUploadAvatar) return;
+    try {
+      setUploadingAvatar(true);
+      await onUploadAvatar(file);
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const sidebarContent = (
     <div className="h-full w-full flex flex-col justify-between bg-brand-navy text-white">
@@ -53,6 +74,51 @@ export const DashboardShell: React.FC<ShellProps> = ({
             {portalLabel}
           </span>
         </div>
+
+        {/* Admin Portal Switcher */}
+        {isAdmin && (
+          <div className="mt-3.5 p-2 rounded-xl bg-white/10 border border-white/15">
+            <div className="text-[10px] uppercase font-bold text-brand-amber tracking-wider mb-1.5 flex items-center justify-between">
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-brand-amber" />
+                <span>Portal Switcher</span>
+              </span>
+              <span className="text-[9px] bg-brand-amber/20 px-1.5 py-0.2 rounded text-brand-amber font-extrabold">ADMIN</span>
+            </div>
+            <div className="grid grid-cols-3 gap-1 text-[11px] font-bold">
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`py-1.5 text-center rounded-lg transition-colors ${
+                  location.pathname === '/admin' ? 'bg-brand-blue text-white shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+                title="Admin Console"
+              >
+                Admin
+              </Link>
+              <Link
+                to="/tutor"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`py-1.5 text-center rounded-lg transition-colors ${
+                  location.pathname === '/tutor' ? 'bg-brand-blue text-white shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+                title="Tutor Portal"
+              >
+                Tutor
+              </Link>
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`py-1.5 text-center rounded-lg transition-colors ${
+                  location.pathname === '/dashboard' ? 'bg-brand-blue text-white shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                }`}
+                title="Student Dashboard"
+              >
+                Student
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation Links (Independent Scrollbar if needed) */}
@@ -102,10 +168,46 @@ export const DashboardShell: React.FC<ShellProps> = ({
           </span>
         </Link>
 
-        {/* Profile Details */}
-        <div className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/10">
-          <div className="w-9 h-9 rounded-full bg-brand-blue text-white font-extrabold text-sm flex items-center justify-center shrink-0 border border-brand-amber/40">
-            {userName.charAt(0).toUpperCase() || 'U'}
+        {/* Profile Details with Avatar Upload */}
+        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 border border-white/10">
+          <div className="relative group shrink-0">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={userName}
+                className="w-10 h-10 rounded-full object-cover border-2 border-brand-amber/60 shadow-sm"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-brand-blue text-white font-extrabold text-sm flex items-center justify-center border-2 border-brand-amber/40 shadow-sm">
+                {userName.charAt(0).toUpperCase() || 'U'}
+              </div>
+            )}
+
+            {onUploadAvatar && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/jpg"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  title="Upload profile photo"
+                  aria-label="Upload profile photo"
+                  className="absolute -bottom-1 -right-1 p-1 rounded-full bg-brand-amber text-brand-navy shadow-md hover:bg-white transition-all scale-90 group-hover:scale-100"
+                >
+                  {uploadingAvatar ? (
+                    <Loader2 className="w-3 h-3 animate-spin text-brand-navy" />
+                  ) : (
+                    <Camera className="w-3 h-3 text-brand-navy" />
+                  )}
+                </button>
+              </>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-xs font-bold text-white truncate">{userName}</div>
@@ -126,7 +228,7 @@ export const DashboardShell: React.FC<ShellProps> = ({
   );
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden bg-brand-gray-50 text-brand-navy">
+    <div className="h-screen h-[100dvh] w-full max-w-full flex overflow-hidden bg-brand-gray-50 text-brand-navy">
       {/* 1. FIXED DESKTOP SIDEBAR (Solid navy, border-r, perfectly flush) */}
       <aside className="hidden lg:flex w-64 h-full shrink-0 bg-brand-navy border-r border-white/10 z-30">
         {sidebarContent}
@@ -155,9 +257,9 @@ export const DashboardShell: React.FC<ShellProps> = ({
       )}
 
       {/* 3. MAIN APPLICATION CONTAINER (Directly adjacent to sidebar) */}
-      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-brand-gray-50">
+      <div className="flex-1 flex flex-col h-full min-h-0 min-w-0 overflow-hidden bg-brand-gray-50">
         {/* FIXED TOPBAR (Header does NOT move when content is scrolled) */}
-        <header className="h-16 px-6 lg:px-8 bg-white border-b border-brand-gray-200 flex items-center justify-between shrink-0 z-20">
+        <header className="h-16 px-3.5 sm:px-6 lg:px-8 bg-white border-b border-brand-gray-200 flex items-center justify-between shrink-0 z-20">
           {/* Left: Mobile Toggle + Breadcrumb */}
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -179,15 +281,53 @@ export const DashboardShell: React.FC<ShellProps> = ({
             </div>
           </div>
 
-          {/* Right: User Status Pill & Actions */}
+          {/* Right: Admin Switcher, User Status Pill & Actions */}
           <div className="flex items-center gap-3 shrink-0">
+            {isAdmin && (
+              <div className="hidden md:flex items-center gap-1 bg-brand-gray-100 p-1 rounded-xl border border-brand-gray-200 text-xs font-bold">
+                <span className="text-[10px] text-brand-gray-400 uppercase tracking-wider px-2">View As:</span>
+                <Link
+                  to="/admin"
+                  className={`px-2.5 py-1 rounded-lg transition-all ${
+                    location.pathname === '/admin' ? 'bg-white text-brand-navy shadow-sm font-extrabold' : 'text-brand-gray-600 hover:text-brand-navy'
+                  }`}
+                >
+                  👑 Admin
+                </Link>
+                <Link
+                  to="/tutor"
+                  className={`px-2.5 py-1 rounded-lg transition-all ${
+                    location.pathname === '/tutor' ? 'bg-white text-brand-navy shadow-sm font-extrabold' : 'text-brand-gray-600 hover:text-brand-navy'
+                  }`}
+                >
+                  👨‍🏫 Tutor
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className={`px-2.5 py-1 rounded-lg transition-all ${
+                    location.pathname === '/dashboard' ? 'bg-white text-brand-navy shadow-sm font-extrabold' : 'text-brand-gray-600 hover:text-brand-navy'
+                  }`}
+                >
+                  🎓 Student
+                </Link>
+              </div>
+            )}
+
             <span className="hidden sm:inline-flex items-center text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-brand-blue border border-blue-200">
               {userSub}
             </span>
 
-            <div className="w-8 h-8 rounded-full bg-brand-navy text-white text-xs font-bold flex items-center justify-center border border-brand-amber">
-              {userName.charAt(0).toUpperCase() || 'U'}
-            </div>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={userName}
+                className="w-8 h-8 rounded-full object-cover border border-brand-amber shadow-sm"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-brand-navy text-white text-xs font-bold flex items-center justify-center border border-brand-amber">
+                {userName.charAt(0).toUpperCase() || 'U'}
+              </div>
+            )}
 
             <button
               onClick={onSignOut}
@@ -200,7 +340,7 @@ export const DashboardShell: React.FC<ShellProps> = ({
         </header>
 
         {/* 4. INDEPENDENT SCROLLABLE CONTENT AREA (ONLY this scrolls) */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
           <div className="w-full space-y-6">
             {children}
           </div>

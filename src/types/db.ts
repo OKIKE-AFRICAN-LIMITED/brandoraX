@@ -1,4 +1,4 @@
-export type Role = 'student' | 'admin';
+export type Role = 'student' | 'admin' | 'tutor';
 export type PaymentStatus = 'pending' | 'awaiting_confirmation' | 'partial' | 'paid';
 export type PaymentPlan = 'upfront' | 'installment';
 export type SubmissionStatus = 'submitted' | 'approved' | 'changes_requested';
@@ -10,6 +10,7 @@ export interface DbProfile {
   phone: string | null;
   country: string | null;
   role: Role;
+  avatar_url?: string | null;
   created_at: string;
 }
 

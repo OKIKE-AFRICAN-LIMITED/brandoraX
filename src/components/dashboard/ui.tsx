@@ -11,12 +11,12 @@ export const Card: React.FC<{
 }> = ({ title, subtitle, action, children, className = '' }) => (
   <section className={`bg-white border border-brand-gray-200 rounded-2xl shadow-sm ${className}`}>
     {(title || action) && (
-      <header className="flex items-start justify-between gap-4 px-5 sm:px-6 pt-5 sm:pt-6">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 px-5 sm:px-6 pt-5 sm:pt-6">
         <div>
           {subtitle && <div className="text-[11px] uppercase tracking-wider text-brand-blue font-bold mb-0.5">{subtitle}</div>}
           {title && <h2 className="text-lg font-extrabold text-brand-navy">{title}</h2>}
         </div>
-        {action}
+        {action && <div className="shrink-0">{action}</div>}
       </header>
     )}
     <div className="p-5 sm:p-6">{children}</div>

@@ -16,6 +16,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { FAQPage } from './pages/FAQPage';
 import { LoginPage } from './pages/LoginPage';
 import { AdminPage } from './pages/AdminPage';
+import { TutorPage } from './pages/TutorPage';
 import { RequireAuth } from './components/RequireAuth';
 import { AuthProvider } from './context/AuthContext';
 import { TrackMatcherModal } from './components/TrackMatcherModal';
@@ -26,12 +27,12 @@ export const AppContent: React.FC = () => {
   const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
   const openFAQ = () => navigate('/faq');
 
-  const isDashboardRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
+  const isDashboardRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin') || location.pathname.startsWith('/tutor');
 
   // Dedicated App Dashboard Mode: No public Navbar, no public Footer, full-viewport application container
   if (isDashboardRoute) {
     return (
-      <div className="h-screen w-screen overflow-hidden bg-brand-gray-50 text-brand-navy">
+      <div className="h-screen h-[100dvh] w-full max-w-full overflow-hidden bg-brand-gray-50 text-brand-navy">
         <ScrollToTop />
         <Routes>
           <Route
@@ -41,6 +42,10 @@ export const AppContent: React.FC = () => {
           <Route
             path="/admin"
             element={<RequireAuth admin><AdminPage /></RequireAuth>}
+          />
+          <Route
+            path="/tutor"
+            element={<RequireAuth tutor><TutorPage /></RequireAuth>}
           />
         </Routes>
       </div>

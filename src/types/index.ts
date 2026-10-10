@@ -44,6 +44,7 @@ export interface StudentProfile {
   cohort: string;
   paymentPlan: 'upfront' | 'installment';
   isEnrolled: boolean;
+  avatarUrl?: string;
   enrollmentDate?: string;
 }
 

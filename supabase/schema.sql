@@ -21,9 +21,15 @@ create table if not exists public.profiles (
   email       text not null default '',
   phone       text default '',
   country     text default 'Nigeria',
-  role        text not null default 'student' check (role in ('student','admin')),
+  role        text not null default 'student' check (role in ('student','admin','tutor')),
+  avatar_url  text default '',
   created_at  timestamptz not null default now()
 );
+
+-- Backwards compatibility migrations
+alter table public.profiles add column if not exists avatar_url text default '';
+alter table public.profiles drop constraint if exists profiles_role_check;
+alter table public.profiles add constraint profiles_role_check check (role in ('student','admin','tutor'));
 
 create table if not exists public.enrollments (
   id              uuid primary key default gen_random_uuid(),
@@ -308,3 +314,33 @@ select
 from auth.users u
 where not exists (select 1 from public.enrollments e where e.user_id = u.id)
 on conflict do nothing;
+
+-- ---------- 7. Storage Bucket & Policies for Avatars ----------
+-- Creates public bucket for user profile avatars
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Avatars are publicly viewable" on storage.objects;
+drop policy if exists "Users can upload their own avatar" on storage.objects;
+drop policy if exists "Users can update their own avatar" on storage.objects;
+drop policy if exists "Users can delete their own avatar" on storage.objects;
+
+create policy "Avatars are publicly viewable"
+  on storage.objects for select
+  using (bucket_id = 'avatars');
+
+create policy "Users can upload their own avatar"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Users can update their own avatar"
+  on storage.objects for update
+  to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Users can delete their own avatar"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);

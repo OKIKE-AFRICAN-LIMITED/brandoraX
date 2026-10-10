@@ -18,9 +18,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuiz,
   onOpenFAQ
 }) => {
-  const { user, isAdmin } = useAuth();
-  const portalPath = isAdmin ? '/admin' : '/dashboard';
-  const portalLabel = isAdmin ? 'Admin Console' : 'Student Dashboard';
+  const { user, isAdmin, isTutor } = useAuth();
+  const portalPath = isAdmin ? '/admin' : isTutor ? '/tutor' : '/dashboard';
+  const portalLabel = isAdmin ? 'Admin Console' : isTutor ? 'Tutor Portal' : 'Student Dashboard';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -304,12 +304,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           </Link>
 
           {user ? (
-            <Link
-              to={portalPath}
-              className="text-xs font-bold text-[#0040E9] hover:underline"
-            >
-              {isAdmin ? 'Admin' : 'Dashboard'}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                to={portalPath}
+                className="text-xs font-bold text-[#0040E9] hover:underline"
+              >
+                {isAdmin ? 'Admin Console' : isTutor ? 'Tutor Portal' : 'Student Portal'}
+              </Link>
+              {isAdmin && (
+                <div className="flex items-center gap-1.5 pl-2 border-l border-gray-200 text-[11px] font-semibold text-gray-500">
+                  <Link to="/tutor" className="hover:text-[#0040E9] transition-colors" title="View Tutor Portal">
+                    Tutor
+                  </Link>
+                  <span className="text-gray-300">•</span>
+                  <Link to="/dashboard" className="hover:text-[#0040E9] transition-colors" title="View Student Dashboard">
+                    Student
+                  </Link>
+                </div>
+              )}
+            </div>
           ) : (
             <Link
               to="/login"
@@ -344,15 +357,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>FAQs</span>
             </button>
           )}
-
-          <Link
-            to="/apply"
-            className={`bg-[#0040E9] hover:bg-[#0035C2] text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2 rounded-lg transition-all shadow-sm ${
-              mobileMenuOpen && !isClosing ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100'
-            }`}
-          >
-            Apply
-          </Link>
 
           {/* Morphing Hamburger-to-X Button */}
           <button
@@ -500,17 +504,54 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
 
                 {/* Dashboard / Login */}
-                <Link
-                  to={user ? portalPath : "/login"}
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-between py-3 text-gray-600 hover:text-[#000F38] text-sm font-semibold"
-                >
-                  <span className="flex items-center gap-2">
-                    <LogIn className="w-4 h-4 text-gray-500" />
-                    <span>{user ? portalLabel : "Student Portal / Login"}</span>
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
-                </Link>
+                {user ? (
+                  <div className="py-2 space-y-1">
+                    <Link
+                      to={portalPath}
+                      onClick={closeMobileMenu}
+                      className="flex items-center justify-between py-2.5 text-brand-blue font-bold text-sm"
+                    >
+                      <span className="flex items-center gap-2">
+                        <LogIn className="w-4 h-4 text-brand-blue" />
+                        <span>{portalLabel}</span>
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-brand-blue" />
+                    </Link>
+
+                    {isAdmin && (
+                      <div className="pl-6 space-y-1 border-l-2 border-brand-blue/20 ml-2">
+                        <Link
+                          to="/tutor"
+                          onClick={closeMobileMenu}
+                          className="flex items-center justify-between py-1.5 text-xs text-gray-600 hover:text-brand-navy font-semibold"
+                        >
+                          <span>👨‍🏫 Switch to Tutor Portal</span>
+                          <ArrowRight className="w-3 h-3 text-gray-400" />
+                        </Link>
+                        <Link
+                          to="/dashboard"
+                          onClick={closeMobileMenu}
+                          className="flex items-center justify-between py-1.5 text-xs text-gray-600 hover:text-brand-navy font-semibold"
+                        >
+                          <span>🎓 Switch to Student Dashboard</span>
+                          <ArrowRight className="w-3 h-3 text-gray-400" />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-between py-3 text-gray-600 hover:text-[#000F38] text-sm font-semibold"
+                  >
+                    <span className="flex items-center gap-2">
+                      <LogIn className="w-4 h-4 text-gray-500" />
+                      <span>Student Portal / Login</span>
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
+                  </Link>
+                )}
               </div>
 
               {/* Bottom Actions & Micro Buttons (Image 1 style) */}

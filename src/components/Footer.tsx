@@ -25,33 +25,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
   return (
     <footer className="bg-[#00081E] text-white pt-16 sm:pt-20 pb-12 px-4 sm:px-6 border-t border-white/10 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-12 mb-12 sm:mb-16">
-          {/* Brand Column (5 cols) */}
-          <div className="lg:col-span-5 pb-6 md:pb-0 border-b border-white/10 md:border-b-0">
-            <Link to="/" className="inline-block mb-6">
-              <img
-                src="/PNG/Full logo_colored_White_BrandoraX.png"
-                alt="BrandoraX"
-                className="h-8 w-auto object-contain"
-              />
-            </Link>
-
-            <p className="text-sm text-gray-400 leading-relaxed max-w-sm mb-6">
-              An outcome-driven digital workforce development platform: train on live briefs, build verified proof-of-work portfolios, and connect to top employer opportunities across Africa.
-            </p>
-
-            <div className="inline-flex items-center gap-2.5 text-xs text-gray-300 bg-white/5 px-3.5 py-2 rounded-full border border-white/10 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Next Cohort Application Window Open</span>
-            </div>
-          </div>
-
-          {/* Programmes (3 cols) - Accordion dropdown on mobile */}
-          <div className="lg:col-span-3 border-b border-white/10 md:border-b-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10 mb-12 sm:mb-16">
+          {/* Programmes */}
+          <div className="border-b border-white/10 md:border-b-0 pb-5 md:pb-0">
             <button
               type="button"
               onClick={() => toggleSection('programmes')}
-              className="w-full flex items-center justify-between py-3.5 md:py-0 text-left md:cursor-default group"
+              className="w-full flex items-center justify-between py-3 md:py-0 text-left md:cursor-default group"
               aria-expanded={openSections.programmes}
             >
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#FEC958] md:mb-5">
@@ -64,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
               />
             </button>
             <div className={`${openSections.programmes ? 'block' : 'hidden'} md:block pt-2 md:pt-0`}>
-              <ul className="space-y-3 text-xs text-gray-300 pb-4 md:pb-0">
+              <ul className="space-y-3 text-xs text-gray-300 pb-2 md:pb-0">
                 <li>
                   <Link to="/academy" className="hover:text-white transition-colors flex items-center gap-1.5 font-medium">
                     <span>Explore Programmes</span>
@@ -97,12 +77,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
             </div>
           </div>
 
-          {/* Ecosystem (2 cols) - Accordion dropdown on mobile */}
-          <div className="lg:col-span-2 border-b border-white/10 md:border-b-0">
+          {/* Ecosystem */}
+          <div className="border-b border-white/10 md:border-b-0 pb-5 md:pb-0">
             <button
               type="button"
               onClick={() => toggleSection('ecosystem')}
-              className="w-full flex items-center justify-between py-3.5 md:py-0 text-left md:cursor-default group"
+              className="w-full flex items-center justify-between py-3 md:py-0 text-left md:cursor-default group"
               aria-expanded={openSections.ecosystem}
             >
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#FEC958] md:mb-5">
@@ -115,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
               />
             </button>
             <div className={`${openSections.ecosystem ? 'block' : 'hidden'} md:block pt-2 md:pt-0`}>
-              <ul className="space-y-3 text-xs text-gray-300 pb-4 md:pb-0">
+              <ul className="space-y-3 text-xs text-gray-300 pb-2 md:pb-0">
                 <li>
                   <Link to="/talent-pipeline" className="hover:text-white transition-colors font-medium">
                     Partner with Us
@@ -158,12 +138,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
             </div>
           </div>
 
-          {/* Contact (2 cols) - Accordion dropdown on mobile, Partnerships placed last */}
-          <div className="lg:col-span-2 border-b border-white/10 md:border-b-0">
+          {/* Contact */}
+          <div className="border-b border-white/10 md:border-b-0 pb-5 md:pb-0">
             <button
               type="button"
               onClick={() => toggleSection('contact')}
-              className="w-full flex items-center justify-between py-3.5 md:py-0 text-left md:cursor-default group"
+              className="w-full flex items-center justify-between py-3 md:py-0 text-left md:cursor-default group"
               aria-expanded={openSections.contact}
             >
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#FEC958] md:mb-5">
@@ -176,21 +156,42 @@ export const Footer: React.FC<FooterProps> = ({ onOpenFAQ, onOpenQuiz }) => {
               />
             </button>
             <div className={`${openSections.contact ? 'block' : 'hidden'} md:block pt-2 md:pt-0`}>
-              <div className="space-y-4 text-xs text-gray-300 pb-4 md:pb-0">
+              <div className="space-y-4 text-xs text-gray-300 pb-2 md:pb-0">
                 <div>
-                  <span className="block text-[11px] text-gray-500 uppercase font-semibold mb-0.5">Admission</span>
+                  <span className="block text-[11px] text-gray-400 uppercase font-semibold mb-0.5">Admin &amp; Desk</span>
                   <a href="mailto:academy@brandorax.africa" className="text-[#FEC958] hover:underline break-all font-medium">
                     academy@brandorax.africa
                   </a>
                 </div>
                 <div>
-                  <span className="block text-[11px] text-gray-500 uppercase font-semibold mb-0.5">Partnership</span>
+                  <span className="block text-[11px] text-gray-400 uppercase font-semibold mb-0.5">Partnership</span>
                   <a href="mailto:partnerships@brandorax.africa" className="text-[#FEC958] hover:underline break-all font-medium">
                     partnerships@brandorax.africa
                   </a>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Cohort Admissions Hub */}
+          <div className="pb-4 md:pb-0">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-[#FEC958] mb-4">
+              Cohort Status
+            </h4>
+            <div className="inline-flex items-center gap-2 text-xs text-gray-200 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 font-medium mb-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Applications Open</span>
+            </div>
+            <p className="text-xs text-gray-400 leading-relaxed mb-4">
+              Outcome-driven digital workforce training with real proof-of-work and mentor reviews.
+            </p>
+            <Link
+              to="/apply"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0040E9] hover:bg-[#0035C2] px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            >
+              <span>Apply for Cohort 1</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 

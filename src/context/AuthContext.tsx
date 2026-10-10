@@ -20,11 +20,13 @@ interface AuthState {
   profile: DbProfile | null;
   enrollment: DbEnrollment | null;
   isAdmin: boolean;
+  isTutor: boolean;
   signIn: (email: string, password: string) => Promise<string | null>;
   /** Returns { error } or { needsConfirmation } when email verification is on. */
   signUp: (input: SignUpInput) => Promise<{ error?: string; needsConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
+  updateProfile: (updates: Partial<DbProfile>) => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -48,9 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ]);
 
       const userEmail = (currentUser?.email || p?.email || '').toLowerCase();
-      let resolvedRole: 'student' | 'admin' = (p?.role as 'student' | 'admin') || 'student';
+      let resolvedRole: 'student' | 'admin' | 'tutor' = (p?.role as 'student' | 'admin' | 'tutor') || 'student';
 
-      if (resolvedRole !== 'admin') {
+      if (resolvedRole !== 'admin' && resolvedRole !== 'tutor') {
         if (userEmail === 'okikeenterprises@gmail.com') {
           resolvedRole = 'admin';
         } else {
@@ -192,6 +194,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refresh = async () => loadUserData(session?.user.id, session?.user);
 
+  const updateProfile = async (updates: Partial<DbProfile>) => {
+    if (!supabase || !session?.user.id) return 'Not authenticated';
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', session.user.id);
+      if (error) return error.message;
+      setProfile((prev) => (prev ? { ...prev, ...updates } : null));
+      return null;
+    } catch (err: any) {
+      return err?.message || 'Failed to update profile';
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -201,10 +218,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         profile,
         enrollment,
         isAdmin: profile?.role === 'admin',
+        isTutor: profile?.role === 'tutor',
         signIn,
         signUp,
         signOut,
-        refresh
+        refresh,
+        updateProfile
       }}
     >
       {children}
